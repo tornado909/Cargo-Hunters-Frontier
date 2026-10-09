@@ -70,15 +70,19 @@ internal static class WearDiagnostics
         if(!active || battle==null || !battle.IsBattleSession) return false;
         reason="invalid-amount";
         if(!float.IsFinite(quantity) || quantity<0f) return false;
-        reason="unowned";
-        var owner=battle.FindOwnerPlayerId(itemId);
-        if(owner==null||!owner.HasValue) return false;
-        reason="not-human";
-        if(humanMethod?.Invoke(null,new object[]{battle,owner.Value}) is not true)
+        if(item==null){reason="item-not-found";return false;}
+        if(!CombatGear(item)){reason="not-combat-gear";return false;}
+        bool Human(BattleSession s,int id)
+        {
+            try { return humanMethod?.Invoke(null,new object[]{s,id}) is true; }
+            catch { return false; }
+        }
+        if(!EquippedHumanCache.Contains(battle,itemId,Human,CombatGear,log,out string evidence))
+        {
+            reason="not-in-human-slots "+evidence;
             return false;
-        reason="not-gear";
-        if(item==null || !CombatGear(item))return false;
-        reason="protected-human-combat-equipment";
+        }
+        reason="matched-current-human-equipment";
         return ConditionPolicy.ShouldPreserve(active,true,true,true,quantity);
     }
 

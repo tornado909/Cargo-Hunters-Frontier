@@ -12,7 +12,7 @@ using HarmonyLib;
 
 namespace Frontier.SurvivorWearGuard;
 
-[BepInPlugin("frontier.cargohunters.survivor.wearguard", "Frontier Survivor Wear Guard", "0.1.1")]
+[BepInPlugin("frontier.cargohunters.survivor.wearguard", "Frontier Survivor Wear Guard", "0.1.3")]
 [BepInDependency("frontier.cargohunters.survivor", BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BasePlugin
 {
@@ -43,7 +43,7 @@ public sealed class Plugin : BasePlugin
                 || target.GetParameters()[1].ParameterType != typeof(IItem)
                 || target.GetParameters()[2].ParameterType != typeof(float))
                 throw new MissingMemberException("Native DecreaseItemCondition ABI changed; patch rejected");
-            var harmony = new Harmony("frontier.survivor.wearguard.0.1.1");
+            var harmony = new Harmony("frontier.survivor.wearguard.0.1.3");
             harmony.Patch(target, prefix: new HarmonyMethod(typeof(Plugin), nameof(ConditionPrefix)));
             WearDiagnostics.Install(harmony, t, Log);
             Log.LogInfo("Survivor Wear Guard installed: native condition-decrease hook, fail-open outside Survivor.");
