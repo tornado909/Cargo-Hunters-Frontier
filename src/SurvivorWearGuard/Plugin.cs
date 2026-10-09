@@ -12,14 +12,14 @@ using HarmonyLib;
 
 namespace Frontier.SurvivorWearGuard;
 
-[BepInPlugin("frontier.cargohunters.survivor.wearguard", "Frontier Survivor Wear Guard", "0.1.0")]
+[BepInPlugin("frontier.cargohunters.survivor.wearguard", "Frontier Survivor Wear Guard", "0.1.1")]
 [BepInDependency("frontier.cargohunters.survivor", BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BasePlugin
 {
     private static ManualLogSource? logger;
     private static MethodInfo? activeGetter, humanMethod;
     private static FieldInfo? authorityField, clientField;
-    private static long totalCalls, protectedCalls, failures;
+    private static long totalCalls, protectedCalls;
 
     public override void Load()
     {
@@ -43,8 +43,9 @@ public sealed class Plugin : BasePlugin
                 || target.GetParameters()[1].ParameterType != typeof(IItem)
                 || target.GetParameters()[2].ParameterType != typeof(float))
                 throw new MissingMemberException("Native DecreaseItemCondition ABI changed; patch rejected");
-            new Harmony("frontier.survivor.wearguard.0.1.0")
-                .Patch(target, prefix: new HarmonyMethod(typeof(Plugin), nameof(ConditionPrefix)));
+            var harmony = new Harmony("frontier.survivor.wearguard.0.1.1");
+            harmony.Patch(target, prefix: new HarmonyMethod(typeof(Plugin), nameof(ConditionPrefix)));
+            WearDiagnostics.Install(harmony, t, Log);
             Log.LogInfo("Survivor Wear Guard installed: native condition-decrease hook, fail-open outside Survivor.");
         }
         catch (Exception e)
@@ -64,39 +65,13 @@ public sealed class Plugin : BasePlugin
         ref bool __result)
     {
         Interlocked.Increment(ref totalCalls);
-        if (activeGetter == null || __instance == null || __0 == null || __1 == null
-            || !float.IsFinite(__2) || __2 <= 0f || !__0.IsBattleSession)
-            return true;
-        try
+        if (__instance==null || __0==null || __1==null) return true;
+        if (WearDiagnostics.ProtectLegacy(__0,__instance.ItemId,__1,__2))
         {
-            var active = (bool)(activeGetter.Invoke(null, null) ?? false);
-            if (!active) return true;
-            var session = authorityField?.GetValue(null) ?? clientField?.GetValue(null);
-            if (session == null) return true;
-            // The game decides ownership. Never infer it from character proximity.
-            var owner = __0.FindOwnerPlayerId(__instance.ItemId);
-            if (owner == null || !owner.HasValue) return true;
-            var playerId = owner.Value;
-            var human = (bool)(humanMethod?.Invoke(null, new[] { session, (object)playerId }) ?? false);
-            if (!human) return true;
-            var equipped = __0.FindEquipmentByPlayerId(playerId);
-            var containing = __0.FindEquipmentContainingItem(__instance.ItemId);
-            var ownsEquipment = equipped != null && containing != null &&
-                string.Equals(equipped.Id.ToString(), containing.Id.ToString(), StringComparison.Ordinal);
-            if (!ConditionPolicy.ShouldPreserve(active, __0.IsBattleSession, human, ownsEquipment, __2)) return true;
-            __result = true; // Successful no-op: do not decrease item's condition.
-            var count = Interlocked.Increment(ref protectedCalls);
-            if (count == 1 || count % 250 == 0)
-                logger?.LogInfo($"Survivor condition preserved for equipped human item. protected={count} checked={totalCalls}");
+            __result=true;
+            Interlocked.Increment(ref protectedCalls);
             return false;
         }
-        catch (Exception e)
-        {
-            // Never break a native authoritative item transaction on an adapter error.
-            var n = Interlocked.Increment(ref failures);
-            if (n <= 3 || n % 100 == 0)
-                logger?.LogWarning($"Wear Guard fail-open #{n}: {e.GetType().Name}: {e.Message}");
-            return true;
-        }
+        return true;
     }
 }

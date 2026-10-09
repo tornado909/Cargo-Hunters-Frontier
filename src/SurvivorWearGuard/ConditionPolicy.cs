@@ -7,9 +7,9 @@ namespace Frontier.SurvivorWearGuard;
 internal static class ConditionPolicy
 {
     internal static bool ShouldPreserve(bool survivorActive, bool inBattle,
-        bool verifiedHuman, bool equippedByThatHuman, float decrement)
+        bool verifiedHuman, bool combatEquipmentOwnedByHuman, float decrement)
     {
         return survivorActive && inBattle && verifiedHuman &&
-               equippedByThatHuman && float.IsFinite(decrement) && decrement > 0f;
+               combatEquipmentOwnedByHuman && float.IsFinite(decrement) && decrement >= 0f;
     }
 }

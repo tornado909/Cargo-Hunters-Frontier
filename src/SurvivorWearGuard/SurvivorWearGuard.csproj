@@ -1,11 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
- <PropertyGroup><TargetFramework>net6.0</TargetFramework><LangVersion>latest</LangVersion><Nullable>enable</Nullable>
- <ImplicitUsings>enable</ImplicitUsings><AssemblyName>Frontier.SurvivorWearGuard</AssemblyName>
- <Deterministic>true</Deterministic><Optimize>true</Optimize><EnableDefaultCompileItems>false</EnableDefaultCompileItems></PropertyGroup>
+ <PropertyGroup>
+  <TargetFramework>net6.0</TargetFramework>
+  <LangVersion>latest</LangVersion><Nullable>enable</Nullable>
+  <ImplicitUsings>enable</ImplicitUsings>
+  <AssemblyName>Frontier.SurvivorWearGuard</AssemblyName>
+  <Deterministic>true</Deterministic><Optimize>true</Optimize>
+  <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+ </PropertyGroup>
  <Target Name="CheckGameReferences" BeforeTargets="ResolveReferences">
   <Error Condition="'$(GameReferenceRoot)' == '' Or !Exists('$(GameReferenceRoot)/interop/Game.Shared.dll')" Text="Provide GameReferenceRoot: isolated BepInEx directory containing version-matched core and interop assemblies."/>
  </Target>
- <ItemGroup><Compile Include="Plugin.cs"/><Compile Include="ConditionPolicy.cs"/></ItemGroup>
+ <ItemGroup>
+  <Compile Include="Plugin.cs"/>
+  <Compile Include="ConditionPolicy.cs"/><Compile Include="WearDiagnostics.cs"/>
+ </ItemGroup>
  <ItemGroup>
   <Reference Include="BepInEx.Core"><HintPath>$(GameReferenceRoot)/core/BepInEx.Core.dll</HintPath><Private>false</Private></Reference>
   <Reference Include="BepInEx.Unity.IL2CPP"><HintPath>$(GameReferenceRoot)/core/BepInEx.Unity.IL2CPP.dll</HintPath><Private>false</Private></Reference>
