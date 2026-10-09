@@ -5,6 +5,7 @@
  <Target Name="CheckGameReferences" BeforeTargets="ResolveReferences">
   <Error Condition="'$(GameReferenceRoot)' == '' Or !Exists('$(GameReferenceRoot)/interop/Game.Shared.dll')" Text="Provide GameReferenceRoot: isolated BepInEx directory containing version-matched core and interop assemblies."/>
  </Target>
+ <ItemGroup><Compile Include="Plugin.cs"/><Compile Include="ConditionPolicy.cs"/></ItemGroup>
  <ItemGroup>
   <Reference Include="BepInEx.Core"><HintPath>$(GameReferenceRoot)/core/BepInEx.Core.dll</HintPath><Private>false</Private></Reference>
   <Reference Include="BepInEx.Unity.IL2CPP"><HintPath>$(GameReferenceRoot)/core/BepInEx.Unity.IL2CPP.dll</HintPath><Private>false</Private></Reference>
