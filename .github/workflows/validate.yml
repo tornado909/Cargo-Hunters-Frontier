@@ -26,7 +26,9 @@ jobs:
             echo "Forbidden generated content in source repository" >&2
             exit 1
           fi
-          echo "PASS: clean source-only snapshot"
+          grep -q '<Compile Include="Plugin.cs"' src/SurvivorWearGuard/SurvivorWearGuard.csproj
+          grep -q '<Compile Include="ConditionPolicy.cs"' src/SurvivorWearGuard/SurvivorWearGuard.csproj
+          echo "PASS: clean source-only snapshot and non-empty plugin source contract"
 
   managed-survivor-progression:
     runs-on: ubuntu-latest
@@ -38,6 +40,9 @@ jobs:
           dotnet-version: '6.0.x'
       - name: Compile and execute isolated co-op progression tests
         run: dotnet run --configuration Release --project experiments/SurvivorCoop/ProgressCheck/ProgressCheck.csproj
+      - name: Test Survivor wear protection policy
+        run: dotnet run --configuration Release --project tests/SurvivorWearGuardPolicy/PolicyTests.csproj
+
 
 # Game plugin DLLs require authorized version-matched Cargo Hunters
 # IL2CPP interop reference assemblies. These are intentionally NOT stored
