@@ -38,6 +38,9 @@ jobs:
           dotnet-version: '6.0.x'
       - name: Compile and execute isolated co-op progression tests
         run: dotnet run --configuration Release --project experiments/SurvivorCoop/ProgressCheck/ProgressCheck.csproj
+      - name: Test Survivor wear protection policy
+        run: dotnet run --configuration Release --project tests/SurvivorWearGuardPolicy/PolicyTests.csproj
+
 
 # Game plugin DLLs require authorized version-matched Cargo Hunters
 # IL2CPP interop reference assemblies. These are intentionally NOT stored
