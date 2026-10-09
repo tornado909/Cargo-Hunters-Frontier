@@ -1,0 +1,45 @@
+name: Frontier source checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source tree hygiene
+        shell: bash
+        run: |
+          set -eu
+          test -f README.md
+          test -f src/Engine/Frontier.Engine.csproj
+          test -f src/Reserve/Frontier.Reserve.csproj
+          if git ls-files | grep -E '(^|/)(bin|obj|saves|logs|crashdumps|interop|compiled|game-assets)/|\.([dD][lL][lL]|[dD][mM][pP])$'; then
+            echo "Forbidden generated content in source repository" >&2
+            exit 1
+          fi
+          echo "PASS: clean source-only snapshot"
+
+  managed-survivor-progression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+      - name: Compile and execute isolated co-op progression tests
+        run: dotnet run --configuration Release --project experiments/SurvivorCoop/ProgressCheck/ProgressCheck.csproj
+
+# Game plugin DLLs require authorized version-matched Cargo Hunters
+# IL2CPP interop reference assemblies. These are intentionally NOT stored
+# in Git and must be provisioned on a separate build worker before enabling
+# a production binary workflow. A green source check != game plugin build.

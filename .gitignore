@@ -1,0 +1,25 @@
+# Build output and game-proprietary generated assemblies
+**/bin/
+**/obj/
+**/interop/
+**/Game.dll
+**/Game.Shared.dll
+**/BepInEx/
+**/*.dll
+**/*.pdb
+**/*.dmp
+**/*.zip
+**/*.7z
+**/*.log
+**/saves/
+**/SaveData/
+**/Diagnostics/
+**/Evidence/
+**/Artifacts/
+**/Backups/
+**/SourceRevisions/
+**/.vs/
+*.user
+*.cache
+**/.env
+**/.env.*
