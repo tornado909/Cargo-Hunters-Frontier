@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup><TargetFramework>net6.0</TargetFramework><LangVersion>10.0</LangVersion><Nullable>enable</Nullable><AllowUnsafeBlocks>true</AllowUnsafeBlocks><GenerateAssemblyInfo>false</GenerateAssemblyInfo><GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute><EnableDefaultCompileItems>false</EnableDefaultCompileItems><AssemblyName>Frontier.Reserve</AssemblyName><Deterministic>true</Deterministic><Optimize>true</Optimize></PropertyGroup>
+ <ItemGroup><Compile Include="Source/*.cs"/><Reference Include="$(GameRoot)/BepInEx/interop/*.dll"><Private>false</Private></Reference><Reference Include="$(GameRoot)/BepInEx/core/BepInEx.Core.dll;$(GameRoot)/BepInEx/core/BepInEx.Unity.IL2CPP.dll;$(GameRoot)/BepInEx/core/Il2CppInterop.Runtime.dll;$(GameRoot)/BepInEx/core/0Harmony.dll"><Private>false</Private></Reference></ItemGroup>
+ <Target Name="CheckGameRoot" BeforeTargets="ResolveReferences"><Error Condition="!Exists('$(GameRoot)/BepInEx/interop/Game.dll')" Text="Set GameRoot to the existing Cargo Hunters installation with BepInEx/interop/Game.dll." /></Target>
+</Project>
