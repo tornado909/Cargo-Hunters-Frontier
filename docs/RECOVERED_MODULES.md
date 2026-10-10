@@ -6,7 +6,7 @@
 
 ## Происхождение и ограничения
 
-Эти 32 проекта получены из текущих установленных DLL (ILSpy + точечные исправления ошибок декомпиляции), а не выданы за оригинальные авторские источники. На ASCENTO-PC ранее существовал аналогичный справочный комплект `Survivor-Coop/SourceBundle/InstalledModuleReferences`. Его манифест прямо обозначает такие проекты как *decompiled reference; not original build source*.
+Эти 32 проекта получены из проверенных DLL (ILSpy + точечные исправления ошибок декомпиляции), а не из оригинальных авторских исходников. Их статус — *decompiled reference; not original build source*.
 
 **Оригинальные авторские исходники** хранятся отдельно: `src/Engine/`, `src/Reserve/`, `src/Survivor/`, `src/Candidates/SurvivorCoop/` и `history/authored/`. Их происхождение и проверенные контрольные суммы описаны в [AUTHORED_SOURCE_RECOVERY.md](AUTHORED_SOURCE_RECOVERY.md). Когда найден достоверный авторский исходник актуальной версии модуля, именно он должен заменить соответствующего кандидата.
 
