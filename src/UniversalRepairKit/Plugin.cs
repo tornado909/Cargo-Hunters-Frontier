@@ -12,7 +12,7 @@ using HarmonyLib;
 
 namespace Frontier.UniversalRepairKit;
 
-[BepInPlugin("frontier.cargohunters.universal-repair", "Frontier Universal Repair Kit", "0.1.0")]
+[BepInPlugin("frontier.cargohunters.universal-repair", "Frontier Universal Repair Kit", "0.1.1")]
 [BepInDependency("frontier.cargohunters.core", BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BasePlugin
 {
@@ -36,13 +36,13 @@ public sealed class Plugin : BasePlugin
         log=Log;
         try
         {
-            var h=new Harmony("frontier.universal.repair.v0.1.0");
+            var h=new Harmony("frontier.universal.repair.v0.1.1");
             var simple=AccessTools.Method(typeof(RestoreConditionOperation), "ExecuteAuthoritative");
             var continuous=AccessTools.Method(typeof(RestoreConditionContinuousOperation), "ExecuteOneTimeAuthoritative");
             var finish=AccessTools.Method(typeof(RestoreConditionContinuousOperation), "FinishAuthoritative");
             if (simple==null||continuous==null||finish==null||
                 simple.ReturnType!=typeof(AbstractItemOperation)||
-                continuous.ReturnType!=typeof(AbstractItemOperation)||
+                continuous.ReturnType!=typeof(bool)||
                 finish.ReturnType!=typeof(AbstractItemOperation))
                 throw new MissingMemberException("Native repair operation signature changed");
             h.Patch(simple,
@@ -50,7 +50,7 @@ public sealed class Plugin : BasePlugin
                 postfix:new HarmonyMethod(typeof(Plugin),nameof(CompleteImmediate)));
             h.Patch(continuous,
                 prefix:new HarmonyMethod(typeof(Plugin),nameof(StartContinuous)),
-                postfix:new HarmonyMethod(typeof(Plugin),nameof(CompleteContinuous)));
+                postfix:new HarmonyMethod(typeof(Plugin),nameof(CompleteContinuousTick)));
             h.Patch(finish,
                 prefix:new HarmonyMethod(typeof(Plugin),nameof(StartContinuous)),
                 postfix:new HarmonyMethod(typeof(Plugin),nameof(CompleteContinuous)));
@@ -69,16 +69,20 @@ public sealed class Plugin : BasePlugin
 
     private static void CompleteImmediate(RestoreConditionOperation __instance,
         ItemsOperationContext __0, AbstractItemOperation __result,Snapshot? __state)
-        => Commit(__0,__result,__state);
+        => Commit(__0,__result!=null,__state);
 
     private static void StartContinuous(RestoreConditionContinuousOperation __instance,
         ItemsOperationContext __0,out Snapshot? __state)
         => __state=Capture(__0,__instance?.TargetItemId??default,
              __instance?.RepairKitId??default,"continuous");
 
+    private static void CompleteContinuousTick(RestoreConditionContinuousOperation __instance,
+        ItemsOperationContext __0, bool __result,Snapshot? __state)
+        => Commit(__0,__result,__state);
+
     private static void CompleteContinuous(RestoreConditionContinuousOperation __instance,
         ItemsOperationContext __0, AbstractItemOperation __result,Snapshot? __state)
-        => Commit(__0,__result,__state);
+        => Commit(__0,__result!=null,__state);
 
     private static Snapshot? Capture(ItemsOperationContext? context,UniqueId targetId,
         UniqueId kitId,string path)
@@ -109,9 +113,9 @@ public sealed class Plugin : BasePlugin
     }
 
     private static void Commit(ItemsOperationContext? context,
-       AbstractItemOperation? nativeResponse, Snapshot? state)
+       bool nativeSucceeded, Snapshot? state)
     {
-        if(context?.ItemsManager==null || nativeResponse==null || state==null)return;
+        if(context?.ItemsManager==null || !nativeSucceeded || state==null)return;
         try
         {
             var kitAfter=context.ItemsManager.Find(state.KitId);
