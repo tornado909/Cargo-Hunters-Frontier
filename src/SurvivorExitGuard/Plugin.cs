@@ -21,7 +21,7 @@ namespace Frontier.SurvivorExitGuard;
 /// SurvivorRun.Tick() can fetch Translation from a world/entity that is
 /// already being unloaded during evacuation (native AccessViolation).
 /// </summary>
-[BepInPlugin("frontier.cargohunters.survivor.exitguard", "Frontier Survivor Exit Guard", "0.1.1")]
+[BepInPlugin("frontier.cargohunters.survivor.exitguard", "Frontier Survivor Exit Guard", "0.1.2")]
 [BepInDependency("frontier.cargohunters.survivor", BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BasePlugin
 {
@@ -53,7 +53,7 @@ public sealed class Plugin : BasePlugin
             if (tick == null || tick.ReturnType != typeof(void) || tick.GetParameters().Length != 0 ||
                 authorityWorldField == null || clientWorldField == null || authorityField == null || runIdGetter == null)
                 throw new MissingMemberException("SurvivorRun 0.2.0 contract mismatch");
-            var h = new Harmony("frontier.survivor.exitguard.0.1.1");
+            var h = new Harmony("frontier.survivor.exitguard.0.1.2");
             h.Patch(tick, prefix: new HarmonyMethod(typeof(Plugin), nameof(BeforeTick)));
             Register(h, typeof(ClientBattleState), "EnterExitState", nameof(ClientExit));
             Register(h, typeof(ClientBattleState), "EnterResultsState", nameof(ClientExit));
@@ -61,12 +61,8 @@ public sealed class Plugin : BasePlugin
             Register(h, typeof(ClientBattleState), "LeaveBattleState", nameof(ClientExit));
             Register(h, typeof(ClientBattleState), "Leave", nameof(ClientExit));
             Register(h, typeof(ClientBattleState), "Shutdown", nameof(ClientExit));
-            Register(h, typeof(ServerBattleState), "EnterExitState", nameof(ServerExit));
-            Register(h, typeof(ServerBattleState), "LeaveBattleState", nameof(ServerExit));
-            Register(h, typeof(ServerBattleState), "Leave", nameof(ServerExit));
             Register(h, typeof(ClientBattleState), "EnterBattleState", nameof(ClientEntered), postfix: true);
-            Register(h, typeof(ServerBattleState), "EnterBattleState", nameof(ServerEntered), postfix: true);
-            logger.LogInfo("Survivor Exit Guard v0.1.1 installed: lifecycle shutdown-before-unload and Translation component preflight.");
+            logger.LogInfo("Survivor Exit Guard v0.1.2 installed: lifecycle shutdown-before-unload and Translation component preflight.");
         }
         catch (Exception e)
         {
