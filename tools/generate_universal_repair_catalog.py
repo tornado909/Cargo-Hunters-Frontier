@@ -21,6 +21,21 @@ LOCALIZATION = "localization.json"
 NAME_KEY = "frontier.universal.repair.name"
 DESCRIPTION_KEY = "frontier.universal.repair.description"
 
+# Includes native weapons (1/11), armor/helmets/hands (6/7/9), heads/
+# torso/legs (13), backpacks (5), modification parts (31) and shields (24).
+# Deliberately excludes keys (23), consumable repair kits (14), ammo and
+# crafting materials. A native repair action still validates item state.
+REPAIR_EQUIPMENT_CATEGORIES = (1, 11, 9, 7, 6, 13, 31, 5, 24)
+
+def build_repair_target_filter():
+    return {
+        "$t": 43446, "_filterPolicy": 0,
+        "_filtersList": [
+            {"$t": 39169, "_filterPolicy": 1,
+             "_itemCategoryIds": list(REPAIR_EQUIPMENT_CATEGORIES)}
+        ]
+    }
+
 def localization_id(key: str) -> str:
     v = int.from_bytes(hashlib.sha256(key.encode("utf-8")).digest()[:8], "big") & ((1 << 63)-1)
     return str(v)
@@ -90,19 +105,9 @@ def make_patch(main: pathlib.Path, game: pathlib.Path):
             if not updating_existing or existing_locale.get("key")!=expected_key:
                 raise ValueError("Localization ID collision")
             del locale[code]
-    # The native root IItemsFilter uses the stock Weapon_repair_kit
-    # category policy. A previous version incorrectly AND-ed three
-    # filters together, including subcategory 102, so ordinary head
-    # parts (category=13, subcategory=32) and guns could NEVER match.
-    # Keep precisely one stock-compatible category matcher. The
-    # authoritative native repair operation still validates a target.
-    filter_obj={
-        "$t":43446,"_filterPolicy":0,
-        "_filtersList":[
-            {"$t":39169,"_filterPolicy":1,
-             "_itemCategoryIds":[1,11,9,7,6,13,31,5,24]}
-        ]
-    }
+    # Use exactly the same one-category-child schema as vanilla
+    # Weapon_repair_kit and Bodypart_repair_kit.
+    filter_obj=build_repair_target_filter()
     def change(path,value):return {"op":"set","path":path,"value":value}
     item_edits=[
         change("/_id",ID),
