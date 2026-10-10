@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Frontier.UniversalRepairKit</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <Deterministic>true</Deterministic>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <Target Name="CheckReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(GameReferenceRoot)'=='' Or !Exists('$(GameReferenceRoot)/interop/Game.Shared.dll')" Text="Pass GameReferenceRoot with version-matched private IL2CPP interop and BepInEx core." />
+  </Target>
+  <ItemGroup>
+    <Compile Include="Plugin.cs" />
+    <Reference Include="BepInEx.Core"><HintPath>$(GameReferenceRoot)/core/BepInEx.Core.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="BepInEx.Unity.IL2CPP"><HintPath>$(GameReferenceRoot)/core/BepInEx.Unity.IL2CPP.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(GameReferenceRoot)/core/0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Il2CppInterop.Runtime"><HintPath>$(GameReferenceRoot)/core/Il2CppInterop.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Core.Shared.Utils"><HintPath>$(GameReferenceRoot)/interop/Core.Shared.Utils.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Il2Cppmscorlib"><HintPath>$(GameReferenceRoot)/interop/Il2Cppmscorlib.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Game.Shared"><HintPath>$(GameReferenceRoot)/interop/Game.Shared.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Game"><HintPath>$(GameReferenceRoot)/interop/Game.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>
