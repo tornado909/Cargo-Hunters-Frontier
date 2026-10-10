@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion><Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Frontier.SurvivorExitGuard</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <Deterministic>true</Deterministic><Optimize>true</Optimize>
+  </PropertyGroup>
+  <Target Name="CheckReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(GameReferenceRoot)'=='' Or !Exists('$(GameReferenceRoot)/interop/Game.dll')" Text="Pass GameReferenceRoot with version-matched private IL2CPP interop and BepInEx core." />
+  </Target>
+  <ItemGroup>
+    <Compile Include="Plugin.cs"/>
+    <Compile Include="ExitGate.cs"/>
+    <Reference Include="BepInEx.Core"><HintPath>$(GameReferenceRoot)/core/BepInEx.Core.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="BepInEx.Unity.IL2CPP"><HintPath>$(GameReferenceRoot)/core/BepInEx.Unity.IL2CPP.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(GameReferenceRoot)/core/0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Il2CppInterop.Runtime"><HintPath>$(GameReferenceRoot)/core/Il2CppInterop.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Game"><HintPath>$(GameReferenceRoot)/interop/Game.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Game.Shared"><HintPath>$(GameReferenceRoot)/interop/Game.Shared.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Entities"><HintPath>$(GameReferenceRoot)/interop/Unity.Entities.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Transforms"><HintPath>$(GameReferenceRoot)/interop/Unity.Transforms.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>$(GameReferenceRoot)/interop/UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Il2Cppmscorlib"><HintPath>$(GameReferenceRoot)/interop/Il2Cppmscorlib.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>
