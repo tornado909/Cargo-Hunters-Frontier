@@ -1,0 +1,3 @@
+# Preserve CRLF bytes of original archived sources for SHA-256 reproducibility.
+history/authored/** -text
+src/Candidates/SurvivorCoop/** -text

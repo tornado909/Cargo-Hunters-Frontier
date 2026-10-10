@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework><LangVersion>10.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+    <AssemblyName>Frontier.Core</AssemblyName><Version>0.2.0</Version>
+    <Deterministic>true</Deterministic><PathMap>$(MSBuildProjectDirectory)=/frontier/src/$(MSBuildProjectName)</PathMap><AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GameDir Condition="'$(GameDir)' == ''">$(CARGO_HUNTERS_DIR)</GameDir>
+    <BepCore>$(GameDir)/BepInEx/core</BepCore><Interop>$(GameDir)/BepInEx/interop</Interop>
+    <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+    <HasOverlay Condition="Exists('$(Interop)/UnityEngine.CoreModule.dll') and Exists('$(Interop)/UnityEngine.IMGUIModule.dll') and Exists('$(Interop)/UnityEngine.InputLegacyModule.dll')">true</HasOverlay>
+    <DefineConstants Condition="'$(HasOverlay)' == 'true'">$(DefineConstants);FRONTIER_OVERLAY</DefineConstants>
+  </PropertyGroup>
+  <Target Name="ValidateReferences" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(BepCore)/BepInEx.Unity.IL2CPP.dll')" Text="Install BepInEx 6 Unity IL2CPP x64, not BepInEx 5 Mono. Pass -p:GameDir=..." />
+
+  </Target>
+  <ItemGroup>
+    <ProjectReference Include="../Frontier.Engine/Frontier.Engine.csproj" />
+    <Reference Include="BepInEx.Core"><HintPath>$(BepCore)/BepInEx.Core.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="BepInEx.Unity.IL2CPP"><HintPath>$(BepCore)/BepInEx.Unity.IL2CPP.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="BepInEx.Unity.Common" Condition="Exists('$(BepCore)/BepInEx.Unity.Common.dll')"><HintPath>$(BepCore)/BepInEx.Unity.Common.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(BepCore)/0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Il2CppInterop.Runtime"><HintPath>$(BepCore)/Il2CppInterop.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule" Condition="'$(HasOverlay)' == 'true'"><HintPath>$(Interop)/UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.IMGUIModule" Condition="'$(HasOverlay)' == 'true'"><HintPath>$(Interop)/UnityEngine.IMGUIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InputLegacyModule" Condition="'$(HasOverlay)' == 'true'"><HintPath>$(Interop)/UnityEngine.InputLegacyModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SharedInternalsModule" Condition="Exists('$(Interop)/UnityEngine.SharedInternalsModule.dll')"><HintPath>$(Interop)/UnityEngine.SharedInternalsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Il2Cppmscorlib" Condition="Exists('$(Interop)/Il2Cppmscorlib.dll')"><HintPath>$(Interop)/Il2Cppmscorlib.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(HasOverlay)' != 'true'"><Compile Remove="FrontierOverlay.cs" /></ItemGroup>
+</Project>

@@ -41,3 +41,10 @@ Workflow **.github/workflows/build-release.yml** запускается вруч
 ---
 
 **English:** Frontier is a Cargo Hunters mod pack. Download the BepInEx-rooted archive from GitHub Releases. An existing matching BepInEx IL2CPP install is required. GitHub Actions builds three verified auxiliary plugins from source and packages 32 other verified prebuilt module DLLs until their production sources can be recovered and accepted.
+
+
+## Оригинальные исходники и проверка кандидатов
+
+В репозитории сохранены авторские исходники прошлых версий Frontier. См. [реестр происхождения](docs/AUTHORED_SOURCE_RECOVERY.md) и [манифест SHA-256](docs/source-archive-manifest.json). Среди них первоначальный Core 0.2/0.3, исходники Reserve и кандидат Survivor-Coop. Эти материалы не являются декомпиляцией текущих DLL.
+
+Через [Source candidate builds](.github/workflows/build-authored-sources.yml) можно отдельно собрать Engine, Reserve и Survivor-Coop на проверенных игровых референсах. Это не изменяет стабильный Release v0.1.0: результаты кандидатов не подменяют работающие DLL до игрового тестирования.
