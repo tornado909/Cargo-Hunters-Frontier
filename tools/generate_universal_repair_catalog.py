@@ -68,10 +68,15 @@ def make_patch(main: pathlib.Path, game: pathlib.Path):
     if manifest.get("id")!="workshop" or manifest.get("schema")!=1:
         raise ValueError("Unexpected Frontier workshop manifest schema")
     previous=[x for x in manifest["operations"] if x.get("operationId","").startswith("workshop.universal.")]
+    updating_existing=bool(previous)
     if previous:
-        if len(previous)==3 and ID in str(previous):
-            return manifest,locale,True
-        raise ValueError("Existing partial repair operations detected")
+        expect={"workshop.universal.00100","workshop.universal.00101","workshop.universal.00102"}
+        if len(previous)!=3 or {x.get("operationId") for x in previous}!=expect or ID not in str(previous):
+            raise ValueError("Existing partial or foreign repair operations detected")
+        # Reconcile a prior fully installed version instead of declaring it
+        # up-to-date: compiled/ is regenerated from module source on startup.
+        manifest["operations"]=[x for x in manifest["operations"]
+            if not x.get("operationId","").startswith("workshop.universal.")]
     if ID in existing or RECIPE_ID in {x["Id"] for x in read_json(craftfile)}:
         raise ValueError("Repair template or recipe ID collision")
     shop=read_json(shopfile)
@@ -79,8 +84,12 @@ def make_patch(main: pathlib.Path, game: pathlib.Path):
         raise ValueError("Starter shop ID mismatch")
     name_id=localization_id(NAME_KEY)
     desc_id=localization_id(DESCRIPTION_KEY)
-    if name_id in locale or desc_id in locale:
-        raise ValueError("Localization ID collision")
+    for code,expected_key in ((name_id,NAME_KEY),(desc_id,DESCRIPTION_KEY)):
+        existing_locale=locale.get(code)
+        if existing_locale is not None:
+            if not updating_existing or existing_locale.get("key")!=expected_key:
+                raise ValueError("Localization ID collision")
+            del locale[code]
     # The native root IItemsFilter uses the stock Weapon_repair_kit
     # category policy. A previous version incorrectly AND-ed three
     # filters together, including subcategory 102, so ordinary head
@@ -142,7 +151,7 @@ def make_patch(main: pathlib.Path, game: pathlib.Path):
     }
     if len({x.get("operationId") for x in manifest["operations"]})!=len(manifest["operations"]):
         raise ValueError("Duplicate workshop operation IDs")
-    return manifest,locale,False
+    return manifest,locale,updating_existing
 
 def game_running()->bool:
     r=subprocess.run(["tasklist.exe","/FI","IMAGENAME eq CargoHunters.exe"],
