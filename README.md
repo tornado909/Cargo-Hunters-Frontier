@@ -1,35 +1,43 @@
-# Cargo Hunters Modded — Frontier
+# Cargo Hunters — Frontier
 
-Private source repository for the Cargo Hunters Frontier plugin pack.
+Модпак Frontier для **Cargo Hunters**: режимы, экипировка, улучшения, ранги, модификации частей тела, ремонт и другие возможности.
 
-## Project status
-Source migration is in progress. The files imported from the existing development
-workspace are **not** automatically production-ready or identical to every DLL
-currently installed. The existing game install and saves are the reference baseline.
+**[Скачать последнюю версию](../../releases/latest)** · [Сборки GitHub Actions](../../actions/workflows/build-release.yml) · [Документация](docs/RELEASE_PIPELINE.md)
 
-## Rules
-- Builds take place on GitHub Actions or on a separate build host, **not** the game PC.
-- Never commit user saves, Steam tokens, private profiles, binaries extracted from
-  Cargo Hunters, game assets, game-generated caches, or crash dumps.
-- Commit source and tests in reviewable groups. Never replace a working game DLL
-  without a verified artifact, rollback package and explicit acceptance.
-- Multiplayer must keep exact pack signatures in sync across host and guest.
-- Teammate Flags is maintained separately:
-  https://github.com/QueenDekim/Cargo-Hunters-Teammate-Flags
+## Установка
 
-## Current tracked work
-1. Survivor equipment durability: investigate and isolate actual Condition decreases
-   before applying any Survivor-only protection for both host and guest.
-2. Nanorepair: distinguish healing actual body-part damage from repairing item durability;
-   verify skill progression and translated display name.
-3. Universal 5,000-credit condition-restoration kit with vanilla authoritative
-   RestoreConditionOperation; no save file edits.
-4. Maintain and improve multiplayer regression tests and pack fingerprint parity.
+1. Требуется **Cargo Hunters 0.26.38.59** и установленный совместимый **BepInEx IL2CPP**.
+2. Сделайте резервную копию старого модпака и сохранений.
+3. Скачайте ZIP вида **Cargo-Hunters-Frontier-v*.zip** из Releases.
+4. Распакуйте находящуюся внутри папку **BepInEx** в каталог игры, объединив папки.
+5. Перезапустите игру; результат загрузки — **BepInEx/Frontier-report.json**.
 
-## Building
-The source projects target game-specific IL2CPP interop assemblies. Those
-proprietary generated reference assemblies are intentionally excluded from Git.
-Do not claim a binary plugin build succeeded until the separate build host or CI
-has access to authorized matching game references. The initial GitHub workflow
-performs source/repository checks and independent pure-code tests; native/game
-acceptance is a separate step.
+Установочный ZIP содержит **BepInEx/plugins/FrontierPack**, а также три дополнительных модуля: **FrontierUniversalRepairKit**, **FrontierSurvivorWearGuard** и **FrontierSurvivorExitGuard**.
+
+**Teammate Flags выпускается отдельно:** [Cargo-Hunters-Teammate-Flags](https://github.com/QueenDekim/Cargo-Hunters-Teammate-Flags).
+
+Для мультиплеера у всех участников должны совпадать состав и версии Frontier.
+
+## Сборка и происхождение бинарников
+
+Workflow **.github/workflows/build-release.yml** запускается вручную или при публикации Git-тега, начинающегося с v.
+
+- GitHub-hosted runner загружает защищённый зашифрованный набор IL2CPP-референсов и проверенный снимок пакета для соответствующей версии игры.
+- **3 плагина** — UniversalRepairKit, SurvivorWearGuard, SurvivorExitGuard — действительно компилируются из исходников репозитория.
+- **Оставшиеся 32 DLL** берутся из SHA-256-верифицированного production-снимка, а **не** пересобираются из неполных или устаревших исходников.
+- GitHub Release содержит ZIP с корнем **BepInEx/**, файлы **SHA256SUMS.txt** и **BUILD-INFO.json** с перечнем собранных и готовых бинарников.
+
+Это честный переходный вариант, **не** заявка на полную сборку всего Frontier из исходников. В частности, исходники в **reconstruction/** и исторический **src/Survivor/** не равнозначны установленным рабочим DLL. Их автоматическая замена в релизе запрещена до полного восстановления и игровых испытаний.
+
+Подробности: [RELEASE_PIPELINE.md](docs/RELEASE_PIPELINE.md) · [SOURCE_PROVENANCE.md](docs/SOURCE_PROVENANCE.md).
+
+## Безопасность и права
+
+- Не обновляйте модпак на неподдерживаемой версии игры без проверки.
+- **FrontierPack/compiled** пересоздаётся при запуске игры и не включается в ZIP.
+- Приватные референсы, сохранения, учётные данные и Steam-токены не включаются в открытые исходники.
+- Сам по себе статус Public не предоставляет прав на сторонние игровые материалы. Cargo Hunters и BepInEx принадлежат соответствующим правообладателям.
+
+---
+
+**English:** Frontier is a Cargo Hunters mod pack. Download the BepInEx-rooted archive from GitHub Releases. An existing matching BepInEx IL2CPP install is required. GitHub Actions builds three verified auxiliary plugins from source and packages 32 other verified prebuilt module DLLs until their production sources can be recovered and accepted.

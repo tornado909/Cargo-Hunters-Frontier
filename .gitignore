@@ -23,3 +23,8 @@
 *.cache
 **/.env
 **/.env.*
+
+# Protected CI input payloads, plaintext native refs and locally staged Releases
+/.private/
+/.ci-private/
+/dist/

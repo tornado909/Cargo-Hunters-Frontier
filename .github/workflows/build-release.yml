@@ -1,0 +1,129 @@
+name: Build Frontier plugins and Release BepInEx
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+# Private-reference builds never run on untrusted pull requests.
+permissions:
+  contents: read
+
+concurrency:
+  group: frontier-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout exact source revision
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Download version-pinned encrypted CI inputs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p .ci-private
+          gh release download ci-inputs-20261011 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'frontier-ci-inputs.tar.gz.gpg' \
+            --dir .ci-private
+
+      - name: Decrypt references in temporary GitHub-hosted runner
+        shell: bash
+        env:
+          FRONTIER_CI_INPUTS_PASSPHRASE: ${{ secrets.FRONTIER_CI_INPUTS_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          test -n "$FRONTIER_CI_INPUTS_PASSPHRASE" || { echo "Missing protected CI input secret"; exit 1; }
+          printf '%s' "$FRONTIER_CI_INPUTS_PASSPHRASE" |
+            gpg --batch --quiet --yes --pinentry-mode loopback \
+              --passphrase-fd 0 --decrypt \
+              --output .ci-private/ci-inputs.tar.gz \
+              .ci-private/frontier-ci-inputs.tar.gz.gpg
+          tar -xzf .ci-private/ci-inputs.tar.gz -C .ci-private
+          rm -f .ci-private/ci-inputs.tar.gz .ci-private/frontier-ci-inputs.tar.gz.gpg
+
+      - name: Verify game ABI, pinned source and plugin manifests
+        run: python3 scripts/verify-ci-inputs.py --input-dir .ci-private
+
+      - name: Run independent source tests
+        run: dotnet run --configuration Release --project experiments/SurvivorCoop/ProgressCheck/ProgressCheck.csproj
+
+      - name: Compile three verified source plugins
+        shell: bash
+        run: |
+          set -euo pipefail
+          refs="$GITHUB_WORKSPACE/.ci-private/references/BepInEx"
+          for name in SurvivorExitGuard SurvivorWearGuard UniversalRepairKit; do
+            project="$(find "src/Plugins/$name" -maxdepth 1 -name '*.csproj' -print -quit)"
+            test -n "$project"
+            dotnet build "$project" --configuration Release \
+              -p:GameReferenceRoot="$refs" --nologo --verbosity minimal
+          done
+
+      - name: Make BepInEx ZIP and checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            version="$GITHUB_REF_NAME"
+          else
+            version="manual-$(git rev-parse --short=7 HEAD)"
+          fi
+          python3 scripts/build-release-archive.py \
+            --input-dir .ci-private --out-dir dist \
+            --version "$version" --commit "$GITHUB_SHA"
+          test "$(find dist -maxdepth 1 -name 'Cargo-Hunters-Frontier-*.zip' | wc -l)" -eq 1
+
+      - name: Publish ZIP in GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Cargo-Hunters-Frontier-*.zip
+            dist/BUILD-INFO.json
+            dist/SHA256SUMS.txt
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          body: |
+            Download the ZIP and extract its BepInEx folder into the Cargo Hunters game directory.
+            Requires an existing matching BepInEx IL2CPP installation and Cargo Hunters 0.26.38.59.
+
+            **Build provenance:** 3 independent Frontier plugins are compiled from source by this workflow.
+            The other 32 plugin DLLs come from a SHA-256-verified production snapshot,
+            and are **not** claimed to have been recompiled from the incomplete source repository.
+            The detailed file inventory is in BUILD-INFO.json. Teammate Flags is a separate project.
+
+            Back up your Frontier installation and saves first. Multiplayer peers must use the same pack.
+
+      - name: Short-lived artifact for manual CI dry runs
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Frontier-BepInEx-dry-run
+          path: |
+            dist/Cargo-Hunters-Frontier-*.zip
+            dist/BUILD-INFO.json
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Delete transient proprietary references
+        if: always()
+        shell: bash
+        run: rm -rf .ci-private
