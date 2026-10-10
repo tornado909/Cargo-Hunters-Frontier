@@ -1,3 +1,17 @@
+# OBSOLETE — universal repair kit 0.1.1 filter was broken
+
+**Do not use this archive.** Its `ItemsFilter` accidentally required three
+conditions simultaneously, including subcategory `102`, which excluded the
+head, firearms and most equipment. The native game's "cannot combine" message
+was reproduced by a user.
+
+**Replacement:** [Universal Repair Kit 0.1.2 filter fix](https://github.com/tornado909/Cargo-Hunters-Frontier/blob/builds/universal-repair-kit-0.1.2-filter-fix-test/builds/Frontier_UniversalRepairKit_0.1.2_FILTER_FIX_TEST.zip).
+
+This is still an experimental package until actual item use/consumption and
+permanent-condition restoration are verified.
+
+---
+
 # Frontier Universal Repair Kit 0.1.1 — TEST
 
 Archive contains a compiled BepInEx sidecar and three modified workshop source JSON files, to be installed identically on host and guest.
