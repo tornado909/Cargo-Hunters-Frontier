@@ -81,12 +81,17 @@ def make_patch(main: pathlib.Path, game: pathlib.Path):
     desc_id=localization_id(DESCRIPTION_KEY)
     if name_id in locale or desc_id in locale:
         raise ValueError("Localization ID collision")
+    # The native root IItemsFilter uses the stock Weapon_repair_kit
+    # category policy. A previous version incorrectly AND-ed three
+    # filters together, including subcategory 102, so ordinary head
+    # parts (category=13, subcategory=32) and guns could NEVER match.
+    # Keep precisely one stock-compatible category matcher. The
+    # authoritative native repair operation still validates a target.
     filter_obj={
         "$t":43446,"_filterPolicy":0,
         "_filtersList":[
-            {"$t":39169,"_filterPolicy":1,"_itemCategoryIds":[1,11,9,7,6,13,31,5]},
-            {"$t":61853,"_filterPolicy":1,"_componentTypeNames":["ArmorComponent","BodyPartComponent","ConditionComponent"]},
-            {"$t":28432,"_filterPolicy":1,"_itemSubCategoryIds":[102]}
+            {"$t":39169,"_filterPolicy":1,
+             "_itemCategoryIds":[1,11,9,7,6,13,31,5]}
         ]
     }
     def change(path,value):return {"op":"set","path":path,"value":value}
