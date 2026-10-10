@@ -21,13 +21,15 @@ namespace Frontier.SurvivorExitGuard;
 /// SurvivorRun.Tick() can fetch Translation from a world/entity that is
 /// already being unloaded during evacuation (native AccessViolation).
 /// </summary>
-[BepInPlugin("frontier.cargohunters.survivor.exitguard", "Frontier Survivor Exit Guard", "0.1.0")]
+[BepInPlugin("frontier.cargohunters.survivor.exitguard", "Frontier Survivor Exit Guard", "0.1.1")]
 [BepInDependency("frontier.cargohunters.survivor", BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BasePlugin
 {
     private static readonly ExitGate gate = new();
     private static ManualLogSource? logger;
     private static FieldInfo? authorityWorldField, clientWorldField, authorityField;
+    private static MethodInfo? runIdGetter;
+    private static string exitingRunId = "";
     private static long prefixedTicks, rejectedTicks, missingComponents, errors;
     private static float nextCheck;
     private const string SurvivorMap = "Frontier_Survivor";
@@ -46,11 +48,12 @@ public sealed class Plugin : BasePlugin
             authorityWorldField = run.GetField("authorityWorld", flags);
             clientWorldField = run.GetField("clientWorld", flags);
             authorityField = run.GetField("authority", flags);
+            runIdGetter = run.GetProperty("RunId", flags)?.GetGetMethod(true);
             var tick = run.GetMethod("Tick", flags);
             if (tick == null || tick.ReturnType != typeof(void) || tick.GetParameters().Length != 0 ||
-                authorityWorldField == null || clientWorldField == null || authorityField == null)
+                authorityWorldField == null || clientWorldField == null || authorityField == null || runIdGetter == null)
                 throw new MissingMemberException("SurvivorRun 0.2.0 contract mismatch");
-            var h = new Harmony("frontier.survivor.exitguard.0.1.0");
+            var h = new Harmony("frontier.survivor.exitguard.0.1.1");
             h.Patch(tick, prefix: new HarmonyMethod(typeof(Plugin), nameof(BeforeTick)));
             Register(h, typeof(ClientBattleState), "EnterExitState", nameof(ClientExit));
             Register(h, typeof(ClientBattleState), "EnterResultsState", nameof(ClientExit));
@@ -63,7 +66,7 @@ public sealed class Plugin : BasePlugin
             Register(h, typeof(ServerBattleState), "Leave", nameof(ServerExit));
             Register(h, typeof(ClientBattleState), "EnterBattleState", nameof(ClientEntered), postfix: true);
             Register(h, typeof(ServerBattleState), "EnterBattleState", nameof(ServerEntered), postfix: true);
-            logger.LogInfo("Survivor Exit Guard v0.1.0 installed: lifecycle shutdown-before-unload and Translation component preflight.");
+            logger.LogInfo("Survivor Exit Guard v0.1.1 installed: lifecycle shutdown-before-unload and Translation component preflight.");
         }
         catch (Exception e)
         {
@@ -82,8 +85,11 @@ public sealed class Plugin : BasePlugin
         else harmony.Patch(target, prefix: hm);
     }
 
-    private static bool SameMap(string? name) =>
-        string.Equals(name, SurvivorMap, StringComparison.Ordinal);
+    private static string ReadRunId()
+    {
+        try { return runIdGetter?.Invoke(null, null) as string ?? ""; }
+        catch { return ""; }
+    }
 
     private static bool BoundSurvivorWorld()
     {
@@ -95,35 +101,38 @@ public sealed class Plugin : BasePlugin
     private static void ArmExit(string eventName)
     {
         if (!gate.Exit()) return;
+        exitingRunId = ReadRunId();
         logger?.LogInfo("SURVIVOR_EXIT_GUARD_ARMED: " + eventName + "; no more SurvivorRun.Tick during teardown.");
     }
 
-    private static void ClientExit(ClientBattleState __instance)
+    // Lifecycle hooks may also be invoked by IL2CPP class initialization,
+    // *before* the native battle configuration has been constructed. Never
+    // dereference __instance._configuration, _mapName or SessionInfo here.
+    // The managed SurvivorRun world fields are populated only for our map.
+    private static void ClientExit()
     {
-        // Map comparison is stable string metadata, not an ECS read.
-        if (__instance != null && SameMap(__instance._mapName)) ArmExit("ClientBattleState");
+        if (BoundSurvivorWorld()) ArmExit("ClientBattleState");
     }
 
-    private static void ServerExit(ServerBattleState __instance)
+    private static void ServerExit()
     {
-        // Some disconnect/evac sequences dispose the server world first.
-        // Check only native map metadata before accessing an entity manager.
-        if (__instance != null && SameMap(__instance._configuration?.SessionInfo?.MapName))
-            ArmExit("ServerBattleState");
+        if (BoundSurvivorWorld()) ArmExit("ServerBattleState");
     }
 
-    private static void ClientEntered(ClientBattleState __instance)
+    private static void ClientEntered()
     {
-        if (__instance == null || !SameMap(__instance._mapName)) return;
+        if (!BoundSurvivorWorld()) return;
         gate.Enter();
+        exitingRunId = "";
         nextCheck = 0f;
         logger?.LogInfo("SURVIVOR_EXIT_GUARD_REARMED: ClientBattleState.EnterBattleState");
     }
 
-    private static void ServerEntered(ServerBattleState __instance)
+    private static void ServerEntered()
     {
-        if (__instance == null || !SameMap(__instance._configuration?.SessionInfo?.MapName)) return;
+        if (!BoundSurvivorWorld()) return;
         gate.Enter();
+        exitingRunId = "";
         nextCheck = 0f;
     }
 
@@ -132,10 +141,24 @@ public sealed class Plugin : BasePlugin
         Interlocked.Increment(ref prefixedTicks);
         if (gate.Stopping)
         {
-            long n = Interlocked.Increment(ref rejectedTicks);
-            if (n == 1 || n % 500 == 0)
-                logger?.LogInfo("SURVIVOR_TICK_SKIPPED_DURING_EXIT: " + n);
-            return false;
+            // New Survivor run IDs are generated by the original Bind().
+            // Restore ticking for a subsequent raid even if a native enter
+            // callback occurred before WorldBridge completed binding.
+            string current = ReadRunId();
+            if (!string.IsNullOrEmpty(current) && current != exitingRunId && BoundSurvivorWorld())
+            {
+                gate.Enter();
+                exitingRunId = "";
+                nextCheck = 0f;
+                logger?.LogInfo("SURVIVOR_EXIT_GUARD_REARMED: new run ID");
+            }
+            else
+            {
+                long n = Interlocked.Increment(ref rejectedTicks);
+                if (n == 1 || n % 500 == 0)
+                    logger?.LogInfo("SURVIVOR_TICK_SKIPPED_DURING_EXIT: " + n);
+                return false;
+            }
         }
         try
         {
