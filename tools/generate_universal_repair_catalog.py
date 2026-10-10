@@ -100,7 +100,7 @@ def make_patch(main: pathlib.Path, game: pathlib.Path):
         "$t":43446,"_filterPolicy":0,
         "_filtersList":[
             {"$t":39169,"_filterPolicy":1,
-             "_itemCategoryIds":[1,11,9,7,6,13,31,5]}
+             "_itemCategoryIds":[1,11,9,7,6,13,31,5,24]}
         ]
     }
     def change(path,value):return {"op":"set","path":path,"value":value}
