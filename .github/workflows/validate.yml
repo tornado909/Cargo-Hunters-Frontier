@@ -27,6 +27,8 @@ jobs:
             exit 1
           fi
           echo "PASS: clean source-only snapshot"
+      - name: Check native repair kit target filter
+        run: python3 -m unittest discover -s tests/UniversalRepairKit -p "test_*.py" -v
 
   managed-survivor-progression:
     runs-on: ubuntu-latest
