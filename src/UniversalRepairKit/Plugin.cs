@@ -17,7 +17,7 @@ namespace Frontier.UniversalRepairKit;
 // serializes changed ItemDto values. The previous v0.1.1 wrote the maximum
 // in ExecuteAuthoritative postfix, after DTOs had already been produced,
 // which was invisible to the client and could be lost on persistence.
-[BepInPlugin("frontier.cargohunters.universal-repair", "Frontier Universal Repair Kit", "0.1.2")]
+[BepInPlugin("frontier.cargohunters.universal-repair", "Frontier Universal Repair Kit", "0.1.3")]
 [BepInDependency("frontier.cargohunters.core", BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BasePlugin
 {
@@ -36,6 +36,8 @@ public sealed class Plugin : BasePlugin
         internal string Path = "";
         internal bool EarlyApplied;
         internal float AfterEarly;
+        internal float NativeCurrentAfterRepair;
+        internal bool EarlyValueAdjusted;
         internal int RepairHooks;
         internal bool ServerSpentKit;
     }
@@ -45,7 +47,7 @@ public sealed class Plugin : BasePlugin
         logger=Log;
         try
         {
-            var h=new Harmony("frontier.universal.repair.v0.1.2");
+            var h=new Harmony("frontier.universal.repair.v0.1.3");
             var one=AccessTools.Method(typeof(RestoreConditionOperation),"ExecuteAuthoritative");
             var tick=AccessTools.Method(typeof(RestoreConditionContinuousOperation),"ExecuteOneTimeAuthoritative");
             var complete=AccessTools.Method(typeof(RestoreConditionContinuousOperation),"FinishAuthoritative");
@@ -70,11 +72,11 @@ public sealed class Plugin : BasePlugin
                 prefix:new HarmonyMethod(typeof(Plugin),nameof(BeginContinuous)),
                 postfix:new HarmonyMethod(typeof(Plugin),nameof(EndContinuous)));
 
-            logger.LogInfo("Universal Repair Kit v0.1.2 ACTIVE: target max restoration is scoped inside native ConditionComponent.Repair BEFORE ItemDto serialization. No free repair/no direct save writes.");
+            logger.LogInfo("Universal Repair Kit v0.1.3 ACTIVE: target max restoration is scoped inside native ConditionComponent.Repair BEFORE ItemDto serialization. No free repair/no direct save writes.");
         }
         catch(Exception e)
         {
-            logger.LogError("Universal Repair v0.1.2 DISABLED: native ABI/prefix initialization failure: "+e);
+            logger.LogError("Universal Repair v0.1.3 DISABLED: native ABI/prefix initialization failure: "+e);
         }
     }
 
@@ -166,19 +168,40 @@ public sealed class Plugin : BasePlugin
             }
             scope.RepairHooks++;
             var n=Interlocked.Increment(ref repairsObserved);
+            // Single-use drag-and-drop repairs follow the authoritative
+            // immediate path. For continuous repairs, do not grant a FULL
+            // permanent restoration while only a fractional kit charge
+            // may have been consumed. That path needs separate acceptance.
+            if(scope.Path!="immediate")
+            {
+                if(n<=3)logger?.LogWarning("UNIVERSAL_REPAIR_CONTINUOUS_FULL_CHARGE_NOT_VERIFIED: native current repair only");
+                return;
+            }
+            if(!float.IsFinite(__0) || __0<=0f)return;
             var max=__instance.MaxValue;
+            scope.NativeCurrentAfterRepair=__instance.Value;
             if(!float.IsFinite(max)||max<=0f||max>scope.PerfectMax+Epsilon)return;
             if(scope.PerfectMax>max+Epsilon)
             {
                 __instance.SetMaxValue(scope.PerfectMax);
+                // Repair(float) has filled only up to the OLD degraded
+                // maximum. With max now restored, also fill the rest of the
+                // yellow/current bar, as promised by a 5000-credit one-use kit.
+                if(__instance.Value<scope.PerfectMax-Epsilon)
+                {
+                    __instance.SetValue(scope.PerfectMax);
+                    scope.EarlyValueAdjusted=true;
+                }
                 var observed=__instance.MaxValue;
+                var observedCurrent=__instance.Value;
                 var remained=__instance.NotPerfectMaxValue;
                 scope.AfterEarly=observed;
-                scope.EarlyApplied=observed>=scope.PerfectMax-Epsilon;
+                scope.EarlyApplied=observed>=scope.PerfectMax-Epsilon &&
+                                   observedCurrent>=scope.PerfectMax-Epsilon;
                 if(scope.EarlyApplied)
                 {
                     var good=Interlocked.Increment(ref redRestored);
-                    logger?.LogInfo($"UNIVERSAL_REPAIR_RED_PRE_DTO_UPDATED n={good} path={scope.Path} from={max:0.###} to={observed:0.###} perfect={scope.PerfectMax:0.###} redRemaining={remained:0.###}");
+                    logger?.LogInfo($"UNIVERSAL_REPAIR_RED_PRE_DTO_UPDATED n={good} path={scope.Path} from={max:0.###} maxNow={observed:0.###} currentNow={observedCurrent:0.###} perfect={scope.PerfectMax:0.###} redRemaining={remained:0.###}");
                 }
                 else
                     logger?.LogWarning($"UNIVERSAL_REPAIR_RED_PRE_DTO_REJECTED from={max:0.###} attempted={scope.PerfectMax:0.###} observed={observed:0.###}");
@@ -221,7 +244,14 @@ public sealed class Plugin : BasePlugin
                     var condition=target?.GetComponent<ConditionComponent>();
                     if(condition!=null &&
                        ((Il2CppObjectBase)condition).Pointer==scope.NativeConditionPointer)
+                    {
                         condition.SetMaxValue(scope.BeforeMax);
+                        // Restore the native game's own repaired current
+                        // value, not the artificial perfect-value fill.
+                        if(scope.EarlyValueAdjusted &&
+                           float.IsFinite(scope.NativeCurrentAfterRepair))
+                            condition.SetValue(Math.Clamp(scope.NativeCurrentAfterRepair,0f,scope.BeforeMax));
+                    }
                 }
                 return;
             }
@@ -230,9 +260,10 @@ public sealed class Plugin : BasePlugin
             float last=post.MaxValue;
             bool good=scope.EarlyApplied &&
                 last>=scope.PerfectMax-Epsilon &&
+                post.Value>=scope.PerfectMax-Epsilon &&
                 post.NotPerfectMaxValue<=Epsilon;
             long count=Interlocked.Increment(ref endConfirmed);
-            logger?.LogInfo($"UNIVERSAL_REPAIR_TX_END n={count} kitSpent=yes path={scope.Path} repairHooks={scope.RepairHooks} earlyApplied={scope.EarlyApplied} savedMax={last:0.###} perfect={scope.PerfectMax:0.###} redRemaining={post.NotPerfectMaxValue:0.###} preDtoVerified={good}");
+            logger?.LogInfo($"UNIVERSAL_REPAIR_TX_END n={count} kitSpent=yes path={scope.Path} repairHooks={scope.RepairHooks} earlyApplied={scope.EarlyApplied} savedMax={last:0.###} savedCurrent={post.Value:0.###} perfect={scope.PerfectMax:0.###} redRemaining={post.NotPerfectMaxValue:0.###} preDtoVerified={good}");
             if(!good && scope.PerfectMax>scope.BeforeMax+Epsilon)
                 logger?.LogWarning("UNIVERSAL_REPAIR_RED_NOT_CONFIRMED: waiting for native state/DTO verification; do NOT report success.");
         }
