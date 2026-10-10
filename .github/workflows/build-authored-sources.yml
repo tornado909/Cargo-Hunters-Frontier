@@ -1,0 +1,92 @@
+name: Build authored Frontier source candidates
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile-original-sources:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify SHA-256 of original authored source snapshots
+        run: python3 scripts/verify-authored-sources.py
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Retrieve pinned encrypted IL2CPP references
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p .ci-private
+          gh release download ci-inputs-20261011 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'frontier-ci-inputs.tar.gz.gpg' --dir .ci-private
+
+      - name: Unlock isolated compilation inputs
+        env:
+          FRONTIER_CI_INPUTS_PASSPHRASE: ${{ secrets.FRONTIER_CI_INPUTS_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          test -n "$FRONTIER_CI_INPUTS_PASSPHRASE"
+          printf '%s' "$FRONTIER_CI_INPUTS_PASSPHRASE" |
+            gpg --batch --quiet --yes --pinentry-mode loopback \
+              --passphrase-fd 0 --decrypt \
+              --output .ci-private/ci-inputs.tar.gz \
+              .ci-private/frontier-ci-inputs.tar.gz.gpg
+          tar -xzf .ci-private/ci-inputs.tar.gz -C .ci-private
+          rm -f .ci-private/ci-inputs.tar.gz .ci-private/frontier-ci-inputs.tar.gz.gpg
+
+      - name: Validate game version, source baseline and ABI references
+        run: python3 scripts/verify-ci-inputs.py --input-dir .ci-private
+
+      - name: Stage verified dependency DLL for compilation only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          base=Path(".ci-private/references/BepInEx/plugins/FrontierPack/modules/rarity-core")
+          base.mkdir(parents=True,exist_ok=True)
+          with ZipFile(".ci-private/pack/production.zip") as z:
+              data=z.read("BepInEx/plugins/FrontierPack/modules/rarity-core/Frontier.Loot.dll")
+          (base/"Frontier.Loot.dll").write_bytes(data)
+          print("Staged single pinned compile-time dependency")
+          PY
+
+      - name: Compile original Engine, Reserve and Survivor-Coop sources
+        run: |
+          set -euo pipefail
+          export GameRoot="$GITHUB_WORKSPACE/.ci-private/references"
+          dotnet build src/Engine/Frontier.Engine.csproj -c Release \
+            -p:GameRoot="$GameRoot" --nologo --verbosity minimal
+          dotnet build src/Reserve/Frontier.Reserve.csproj -c Release \
+            -p:GameRoot="$GameRoot" --nologo --verbosity minimal
+          dotnet build src/Candidates/SurvivorCoop/Frontier.Survivor.csproj -c Release \
+            -p:GameRoot="$GameRoot" --nologo --verbosity minimal
+
+      - name: Report source candidate status (no production replacements)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          projects=[
+              ("Engine","src/Engine/bin/Release/net6.0/Frontier.Engine.dll"),
+              ("Reserve","src/Reserve/bin/Release/net6.0/Frontier.Reserve.dll"),
+              ("SurvivorCoop","src/Candidates/SurvivorCoop/bin/Release/net6.0/Frontier.Survivor.dll")
+          ]
+          for name,rel in projects:
+              p=Path(rel)
+              if not p.is_file():raise SystemExit("Candidate build missing: "+name)
+              print(name,p.stat().st_size,"bytes; source candidate only")
+          PY
+
+      - name: Remove proprietary reference inputs
+        if: always()
+        run: rm -rf .ci-private

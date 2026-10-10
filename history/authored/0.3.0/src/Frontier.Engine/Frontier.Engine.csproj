@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework><AssemblyName>Frontier.Engine</AssemblyName><Version>0.3.0</Version>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+    <LangVersion>10.0</LangVersion><Deterministic>true</Deterministic><PathMap>$(MSBuildProjectDirectory)=/frontier/src/$(MSBuildProjectName)</PathMap>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+  </PropertyGroup>
+</Project>

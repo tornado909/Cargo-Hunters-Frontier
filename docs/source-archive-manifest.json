@@ -1,0 +1,1399 @@
+{
+  "schema": 1,
+  "source_snapshot_sha256": "f1b79b084a68eb15ecb580f23cda4d410f2d2dd6ada708bd54355927999bcc83",
+  "description": "Original author-created source from prior Cargo Hunters Frontier archives and workspaces; no decompiled sources in this import",
+  "entries": [
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Core/CoopController.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Core/CoopController.cs",
+      "sha256": "4fc5e7dd4dee84939046e491e6fd525aa69076c0f18627ff4f4963286ac0d6cd",
+      "size": 20378,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Core/CoopHooks.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Core/CoopHooks.cs",
+      "sha256": "eb6470c3c7ed67c139a64ee09cd08f2b7605a7c6af923480f21062f42f61e2c7",
+      "size": 10934,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Core/EnemyRoller.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Core/EnemyRoller.cs",
+      "sha256": "22742e129b02118b59172b58bd0caa9ed9d74c61116337eaa53487ba3c292dc9",
+      "size": 4023,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Core/Frontier.Core.csproj",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Core/Frontier.Core.csproj",
+      "sha256": "32e14cef2e1353e07c07577baec32e74ec3a4f86c0815f37a95bbedecbf93bb6",
+      "size": 3148,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Core/FrontierOverlay.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Core/FrontierOverlay.cs",
+      "sha256": "ce5cd53a4ddf704078bdaf0f4000fbf597c19ec52b0d3b2c4751363330ca9fff",
+      "size": 1534,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Core/Plugin.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Core/Plugin.cs",
+      "sha256": "a9e8b2c45d4791e0d7fa241818fb5750c97503c7dcf2c1fe103bce83e0cb01c4",
+      "size": 13665,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Core/Reflect.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Core/Reflect.cs",
+      "sha256": "e07a83f574dc8701bf241067549bb0c8bb730e7ed4939d7343390d1966659841",
+      "size": 2303,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Core/SteamLobbyApi.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Core/SteamLobbyApi.cs",
+      "sha256": "3a21c0c112cda3518d159ba8bcc9f6248d95e2776a1c145a124b39747d8eff7b",
+      "size": 6124,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Engine/CoopProtocol.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Engine/CoopProtocol.cs",
+      "sha256": "48100c06db04f6e3fd1c1c6c7de5eddfa259ca2ab818c79d88a62d62a2f1dfcc",
+      "size": 7202,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Engine/Frontier.Engine.csproj",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Engine/Frontier.Engine.csproj",
+      "sha256": "236864e51326f4cd63f8686f98adf8c3707b3c3d4e8b222d4e689836738689c4",
+      "size": 469,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Engine/PackSettings.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Engine/PackSettings.cs",
+      "sha256": "c9304fc4d855853f946931d90a68788e8d40c4616a203d3db9997175bb0e568d",
+      "size": 2415,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Engine/PatchEngine.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Engine/PatchEngine.cs",
+      "sha256": "912ce48b13850c96f93ea89c014d29c2fb9bd6c9da21211505ba90106e9fc386",
+      "size": 11102,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Tests/CoopTests.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Tests/CoopTests.cs",
+      "sha256": "44c2c0e0b1645561e3afbf20914b6ffcbeb12ee30e7fffeeb24eba05a6cc0fb9",
+      "size": 9213,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Tests/Frontier.Tests.csproj",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Tests/Frontier.Tests.csproj",
+      "sha256": "d5b5e3d50f1f09aa1cb10b2bfc9bdf8e34c3db21c932bfbd9231cacc882a594c",
+      "size": 481,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.2.0/CargoHunters_FrontierPack_Coop/src/Frontier.Tests/Program.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.2.0-coop-rc1_source",
+      "original_relative_file": "CargoHunters_FrontierPack_Coop/src/Frontier.Tests/Program.cs",
+      "sha256": "63c6e48353546c3d1db24adb2510a41e5b47ccab484e2230056ef45522fc2c0d",
+      "size": 4107,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/CoopController.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/CoopController.cs",
+      "sha256": "4fc5e7dd4dee84939046e491e6fd525aa69076c0f18627ff4f4963286ac0d6cd",
+      "size": 20378,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/CoopHooks.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/CoopHooks.cs",
+      "sha256": "0de340e27620d786782b2c145e6ec419b4583984284732e878036324ca59ebcb",
+      "size": 9470,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/EnemyRoller.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/EnemyRoller.cs",
+      "sha256": "ca9caa95a453179da2e60cede975da9e78bcaa5441efbe3cdfe7d203407c571a",
+      "size": 4244,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/Frontier.Core.csproj",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/Frontier.Core.csproj",
+      "sha256": "d4198e587263a7b295155171120a99cbdf2ab67ddfe988df48f06b364efdb71a",
+      "size": 3148,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/FrontierOverlay.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/FrontierOverlay.cs",
+      "sha256": "2a48728b3b64bd8b61570fb0768b6407953cc5410b48979c0dc0c37569341cd3",
+      "size": 1627,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/Plugin.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/Plugin.cs",
+      "sha256": "856f82fad195a373ca50956b6b7d821d9e7ca90bfbd7a629ffe4494a46e9ea7a",
+      "size": 15563,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/Reflect.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/Reflect.cs",
+      "sha256": "531032f8bb3b25e321daeebe836ed1998395b3bad843b95c0500c04d1c965169",
+      "size": 5158,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/RuntimeAudit.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/RuntimeAudit.cs",
+      "sha256": "5ff9a30243e7b504e58478af3123a40ec59f5508e25aa27212055f091feff1c6",
+      "size": 7786,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/RuntimeObservations.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/RuntimeObservations.cs",
+      "sha256": "2a131ea1e03ea1e941075f33c1ce80e4b700db1c4230e0201ed9ff42a3e577ec",
+      "size": 10747,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/SaveSnapshots.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/SaveSnapshots.cs",
+      "sha256": "8ddbc29a2d78669f102fbfd3c97319033fa942e890e0d4a9e1d01ae411849619",
+      "size": 4071,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Core/SteamLobbyApi.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Core/SteamLobbyApi.cs",
+      "sha256": "3a21c0c112cda3518d159ba8bcc9f6248d95e2776a1c145a124b39747d8eff7b",
+      "size": 6124,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Engine/CoopProtocol.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Engine/CoopProtocol.cs",
+      "sha256": "75a15f91a549a3de02bb6f0b29e4b0e43490630d87050c7ad11cf74e75f14599",
+      "size": 7278,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Engine/Frontier.Engine.csproj",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Engine/Frontier.Engine.csproj",
+      "sha256": "ef789e7662b3a4346f24566383a22923940c80be529fce1682e4584f16f41e88",
+      "size": 469,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Engine/PackSettings.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Engine/PackSettings.cs",
+      "sha256": "f352214ff37f5cdf69b77d5eec10d384ec10fa1aa20a6eb33deb00ec21f781f1",
+      "size": 2470,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Engine/PatchEngine.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Engine/PatchEngine.cs",
+      "sha256": "693f3ca9dbd8110e48cdd0b4114ad0f60421727c455744adcd5f8725b1d6e3c7",
+      "size": 11678,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Engine/RuntimeTestContent.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Engine/RuntimeTestContent.cs",
+      "sha256": "966b8ff857f032debadc6e496454b809d1b909c01418f92df078abe318e66aba",
+      "size": 1357,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Tests/CoopTests.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Tests/CoopTests.cs",
+      "sha256": "44c2c0e0b1645561e3afbf20914b6ffcbeb12ee30e7fffeeb24eba05a6cc0fb9",
+      "size": 9213,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Tests/Frontier.Tests.csproj",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Tests/Frontier.Tests.csproj",
+      "sha256": "d5b5e3d50f1f09aa1cb10b2bfc9bdf8e34c3db21c932bfbd9231cacc882a594c",
+      "size": 481,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/0.3.0/src/Frontier.Tests/Program.cs",
+      "original_group": "archive/CargoHunters_FrontierPack_0.3.0-runtime-rc1_source",
+      "original_relative_file": "src/Frontier.Tests/Program.cs",
+      "sha256": "868aa05db096c642f7ee69353d3d771336b7bb007c19f80a86ca839971f806f0",
+      "size": 6209,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/elite-rigos-patch/src/Frontier.Core/ElitePresentation.cs",
+      "original_group": "archive/CargoHunters_Elite_Rarity_Loot_RigOS_patch_source",
+      "original_relative_file": "src/Frontier.Core/ElitePresentation.cs",
+      "sha256": "f961315b4150c7472c51160a97f6ff549f00d3a7c0a53fba8911cfdce5bf4635",
+      "size": 4796,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/elite-rigos-patch/src/Frontier.Core/EliteWorldOverlay.cs",
+      "original_group": "archive/CargoHunters_Elite_Rarity_Loot_RigOS_patch_source",
+      "original_relative_file": "src/Frontier.Core/EliteWorldOverlay.cs",
+      "sha256": "e9ba44a1b09b444c638de3962034367894013092d266d3906d80e0107a90d8be",
+      "size": 1542,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/elite-rigos-patch/src/Frontier.Core/Plugin.cs",
+      "original_group": "archive/CargoHunters_Elite_Rarity_Loot_RigOS_patch_source",
+      "original_relative_file": "src/Frontier.Core/Plugin.cs",
+      "sha256": "1d89988c0512155f0b357ed8eb24386e723b47ad1424b137b068d1e967b44fad",
+      "size": 16026,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/elite-rigos-patch/src/Frontier.Core/RigOSLocalizationFix.cs",
+      "original_group": "archive/CargoHunters_Elite_Rarity_Loot_RigOS_patch_source",
+      "original_relative_file": "src/Frontier.Core/RigOSLocalizationFix.cs",
+      "sha256": "ca85502051caf94eae4d158780645a63745abdfa4e8246f77dd053a540c18ac8",
+      "size": 4236,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/elite-rigos-patch/src/Frontier.Core/RuntimeObservations.cs",
+      "original_group": "archive/CargoHunters_Elite_Rarity_Loot_RigOS_patch_source",
+      "original_relative_file": "src/Frontier.Core/RuntimeObservations.cs",
+      "sha256": "7378f1a3132f5e69c422a5729aa4087315bf12b51e0d6c80f1e69c2fe77cb37a",
+      "size": 10822,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/coop-shelter-patch/src/Frontier.Core/CoopController.cs",
+      "original_group": "archive/CargoHunters_CoopShelter_hotfix2_source",
+      "original_relative_file": "src/Frontier.Core/CoopController.cs",
+      "sha256": "7476200cc2612970b125ddde6afb967f1187b4b72748b4f22fa592f5f72502ad",
+      "size": 23691,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/coop-shelter-patch/src/Frontier.Core/CoopHooks.cs",
+      "original_group": "archive/CargoHunters_CoopShelter_hotfix2_source",
+      "original_relative_file": "src/Frontier.Core/CoopHooks.cs",
+      "sha256": "038d76872db8e78b5a66ffe57ca7365a4e717046c31a696028189d8aba1b5041",
+      "size": 11460,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/coop-shelter-patch/src/Frontier.Engine/ConnectionPolicy.cs",
+      "original_group": "archive/CargoHunters_CoopShelter_hotfix2_source",
+      "original_relative_file": "src/Frontier.Engine/ConnectionPolicy.cs",
+      "sha256": "916c7c9b0232252aa149d84ae3c64a7fe302b56d26fda1c20e7248d0aed0a484",
+      "size": 2174,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/coop-shelter-patch/src/Frontier.Tests/Program.cs",
+      "original_group": "archive/CargoHunters_CoopShelter_hotfix2_source",
+      "original_relative_file": "src/Frontier.Tests/Program.cs",
+      "sha256": "5c6681ce17823291bca76bf5ee03a4da9e993081e51bce43f5fae97faf3de61f",
+      "size": 6315,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/coop-shelter-patch/src/Frontier.Tests/ShelterConnectionTests.cs",
+      "original_group": "archive/CargoHunters_CoopShelter_hotfix2_source",
+      "original_relative_file": "src/Frontier.Tests/ShelterConnectionTests.cs",
+      "sha256": "42f820ed85cdf46240aaca3f832df9b4bec8529bd36c0bf8d6ac4e302495808e",
+      "size": 5249,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Frontier.Reserve.csproj",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Frontier.Reserve.csproj",
+      "sha256": "a7d4ef0c430676cca57c711c5dd006705a4e6d09db3b939faa16bacaa4eff0c3",
+      "size": 1132,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/AssemblyInfo.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/AssemblyInfo.cs",
+      "sha256": "bea9391ab1030accd211e47206b8ae336b44504a3000568f260e2d9eabfbfccb",
+      "size": 226,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/Loader.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/Loader.cs",
+      "sha256": "27cb38a337c56eb6e595229af11fe2c2194fa1ecd4f446c1c38dd645f064bbf2",
+      "size": 7184,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/LocationModel.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/LocationModel.cs",
+      "sha256": "048e109d2fe9294b91006ff94c715ce496b7c17eedd79199f47ab006fac74172",
+      "size": 6999,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/Menu.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/Menu.cs",
+      "sha256": "be02cdad3851721030d12a04b8be42d0ee30c34d0986ce96b124f77c757a3247",
+      "size": 3977,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/NativeGeometry.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/NativeGeometry.cs",
+      "sha256": "f9c651c98cf0fdee3b4add69ea260a3a0295eb58e439fcddd4ffa68b74eb4c27",
+      "size": 9629,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/NativeHookContract.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/NativeHookContract.cs",
+      "sha256": "87d5aa7639f41c5fca8be3e1a0794366827188dd880e714415c099daf8b63d04",
+      "size": 3447,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/NativePlacements.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/NativePlacements.cs",
+      "sha256": "be5e6de4c4197160d76a9e0872d2692710784d0f53005e38ca7de5d539186d7c",
+      "size": 8900,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/Navigation.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/Navigation.cs",
+      "sha256": "495828f63e283f4e1423f091f1d5ec2d4f8d2128e4dd2ebadce040407cbe62ae",
+      "size": 5264,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/Plugin.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/Plugin.cs",
+      "sha256": "72eb02ffa28ff19838e301b93ba59be4c09199f08a9f4aa053bcdf659cff0ba3",
+      "size": 10098,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/Presentation.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/Presentation.cs",
+      "sha256": "be5ece7daf4c402ea25c5c66fbd362640e14ce7a22c617f124df3a5e00247474",
+      "size": 2803,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/Repositories.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/Repositories.cs",
+      "sha256": "16908d15f9c4523cf2a8d4b7f773a5bf7ea34cd72430005a5a680354699183b9",
+      "size": 12392,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/ReserveButton.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/ReserveButton.cs",
+      "sha256": "0eab16ec5fe4b6fde59cfe2fb626505367aafe26f74b1dfdb5970c1cc1b90e11",
+      "size": 4322,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/Support.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/Support.cs",
+      "sha256": "4572f52b6e74064d1504f3d2fbca3660ce13ef092f6b66cdda61f5bec75745c5",
+      "size": 3514,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Source/WorldBridge.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Source/WorldBridge.cs",
+      "sha256": "c667caef9c08a7576605190ee2a559464e4d5a82c04eb004e70650941ede8319",
+      "size": 3826,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Tests/ApiAudit.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Tests/ApiAudit.cs",
+      "sha256": "a8c8564808167ed2a3f4cf086269121a8b7ac9cc1bb9a75910cdbc9031a6be37",
+      "size": 2884,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Tests/ComposeTest.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Tests/ComposeTest.cs",
+      "sha256": "6242fee229dedefca3000790f67b6eee78b1c999f1b94511501b79ca32488656",
+      "size": 957,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Tests/GeometryTests.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Tests/GeometryTests.cs",
+      "sha256": "26d3a9d8689728f8ff64e2a07026c19e531818a7039e667929884fb833f4031f",
+      "size": 2666,
+      "newly_imported": true
+    },
+    {
+      "path": "history/authored/reserve-v10.9.0/Tests/HookPreflight.cs",
+      "original_group": "archive/Frontier_v10.9.0_Reserve_Source",
+      "original_relative_file": "Tests/HookPreflight.cs",
+      "sha256": "51e321881c9480e1bd93fa1b3e91adc6e716ff474aadd606c0657b4ac4c5eebd",
+      "size": 990,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Frontier.Survivor.csproj",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Frontier.Survivor.csproj",
+      "sha256": "af5a6c0c6b49113d004ce88727c3e7c98485383812621cbae80ac391863285ec",
+      "size": 1308,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/AssemblyInfo.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/AssemblyInfo.cs",
+      "sha256": "5eb6fdd0509585665566bd5ee65beece43e16b58827444f28599f3104507b554",
+      "size": 218,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/GlobalAliases.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/GlobalAliases.cs",
+      "sha256": "f491508c44d0d29a700466b1833d7b2af2b17d2946ec68757a9226d136a1b8a6",
+      "size": 105,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/Loader.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/Loader.cs",
+      "sha256": "afd8bf5e2f418f5ca8a6ddaff68055da1f0da002059f69e83cddd655490bf8fd",
+      "size": 9997,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/LocationModel.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/LocationModel.cs",
+      "sha256": "df711735bcbec0b4e0a5219aa5c2ee3d73029f203c2f0a5ce31b6e1a5c457a3a",
+      "size": 7268,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/LootProfiles.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/LootProfiles.cs",
+      "sha256": "1c375be8d6b684e14ba1a2965673d3d5006a88ac3a478e75db0c11cc8513e9cf",
+      "size": 8597,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/Menu.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/Menu.cs",
+      "sha256": "93288c71c49318c85e47c0e9cb347eff022ab5470c5c4f1e515226eff1ca10dd",
+      "size": 4073,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/NativeBotEquipment.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/NativeBotEquipment.cs",
+      "sha256": "caa4db98916c344839ffc62e3159c28dfb8fee459dc671e457838270bb3e15e3",
+      "size": 4461,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/NativeEcsValues.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/NativeEcsValues.cs",
+      "sha256": "a6788b67a41511281bc7b5524d720672e8bc88df2e899e0f19914d8d1e8d69fa",
+      "size": 3769,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/NativeGeometry.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/NativeGeometry.cs",
+      "sha256": "8c98875b050c563a03d1539a2fb6d55d3bb324ba7024d7fd7f17449578d115d6",
+      "size": 5094,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/NativeHookContract.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/NativeHookContract.cs",
+      "sha256": "918b3fe229d11b9083530787f0c1027fdd04d3432c9ebaa809ea3f6dbf08eb9c",
+      "size": 3508,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/NativePlacements.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/NativePlacements.cs",
+      "sha256": "fec75ffe4cf717a9872e762a4461d04e4fac6e4e83d0c82b8dbe5bfe01e33d9b",
+      "size": 9738,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/NativePrefabCatalog.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/NativePrefabCatalog.cs",
+      "sha256": "e209f429c48e00f2c88069cb32f9bc7d90b213eb99f33e595ee926f93021472c",
+      "size": 5058,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/NativePrefabLayer.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/NativePrefabLayer.cs",
+      "sha256": "1360fac58b2d134f403fdafeb76c1f1b00a49aa6f4b5ccddbe4167ec9c5e0c7b",
+      "size": 5993,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/NativePrefabSources.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/NativePrefabSources.cs",
+      "sha256": "4ec78ad911eaa3732ffea21490528b5f55c4ed55a39ead16324c6fa2aa72859d",
+      "size": 5031,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/NativeStockArt.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/NativeStockArt.cs",
+      "sha256": "a665233fa2c2fcbe0d34536056250f28535f758dff56f64ec12592de935497f1",
+      "size": 15060,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/Navigation.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/Navigation.cs",
+      "sha256": "7d32c6cd0059a0196fdec71f85d0568e3dec792ee993d50e4924b083ae491093",
+      "size": 5425,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/Plugin.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/Plugin.cs",
+      "sha256": "bb8c2a320166c44551252e48e66cd9e10e9ffd464d0e2ec80d0f0d568656fe20",
+      "size": 10108,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/PreparationEpoch.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/PreparationEpoch.cs",
+      "sha256": "919e969f97137f5577676b76a81ba158d6bb8f9ec410cb5fe924e577808bbcd5",
+      "size": 2809,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/Presentation.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/Presentation.cs",
+      "sha256": "985a72a93366587fb2c9ea7dd4f30978f69f271b56c49193e5baf302a7e73f9c",
+      "size": 4039,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/ReportFile.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/ReportFile.cs",
+      "sha256": "127e8dfc0cd944233d6c71f3878a68ce13a22c8c4a1cb1a60b4552e429f4b0bc",
+      "size": 1359,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/Repositories.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/Repositories.cs",
+      "sha256": "d318bfdd85fac7fda57d32fafbae4b7d4bef0b0a063e7b2799229c0b68fb5c9f",
+      "size": 23685,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/ReserveButton.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/ReserveButton.cs",
+      "sha256": "40eefe3442cdf2687dfca45fde5305330a1891d15192e7931400355151d1dc61",
+      "size": 4371,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/RunProgress.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/RunProgress.cs",
+      "sha256": "65dbaec90098c848be86ac5c3ee66f3a12b003c079d5b71ecc7a7fa33356102f",
+      "size": 3556,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/SceneContract.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/SceneContract.cs",
+      "sha256": "f22f770eb98b762ef8977d774bcf02aee97ce6b2fa2f0b6ded35ce3d8c98868e",
+      "size": 1477,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/Support.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/Support.cs",
+      "sha256": "3e4c5098d580ee42459095f93dcb069c7d5e15f023d7283ebb9d10d952c55edb",
+      "size": 3588,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/SurvivorHooks.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/SurvivorHooks.cs",
+      "sha256": "d34be492a87d0d726aa1fc83bc467656f8fc5b4d1270668e8a6fbd7216f84bf7",
+      "size": 5644,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/SurvivorHud.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/SurvivorHud.cs",
+      "sha256": "24af1e3cba22f0c92e22a66667bca35cb413e64e567a046463d3c9137199f257",
+      "size": 4969,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/SurvivorRanks.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/SurvivorRanks.cs",
+      "sha256": "132a61ac88875f1db76376916cd3e847f620345799b52a2cc2530f2cb8a602f0",
+      "size": 3389,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/SurvivorRun.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/SurvivorRun.cs",
+      "sha256": "fdf2f79d4d94d4b4915d4929f5b730f8d37879304d8252d60004ec6d8df13caf",
+      "size": 12058,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/TemplateContract.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/TemplateContract.cs",
+      "sha256": "ea20b5c3e889a09de525e319c18d113815098a54868bbb6d6b778a72af0deb9e",
+      "size": 2560,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Candidates/SurvivorCoop/Source/WorldBridge.cs",
+      "original_group": "working/survivor-coop",
+      "original_relative_file": "Source/WorldBridge.cs",
+      "sha256": "d3967597007281eeba74764a73749b194b2224be4b78ac2979bef0a95cb43966",
+      "size": 5975,
+      "newly_imported": true
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/ConnectionPolicy.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/ConnectionPolicy.cs",
+      "sha256": "201fb78449e65f54ace7ab14a871167d9172195cb9f3f65b3f5b083f18bf5e53",
+      "size": 482,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/CoopProtocol.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/CoopProtocol.cs",
+      "sha256": "aa2de03f4733741786b33408f44c0aafc3a55e0456febc451d5efc79e9b68368",
+      "size": 4892,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/CoopRoster.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/CoopRoster.cs",
+      "sha256": "7988adb19ff3e546571df50e8f33be3d7d8636cf51b24650a3a5cf7f8692e795",
+      "size": 2806,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/EliteVisualProtocol.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/EliteVisualProtocol.cs",
+      "sha256": "e64022ec3e7e2ac23e7fa0cb640bedeef2a45581d2bb144d92fdbdca7a5e0631",
+      "size": 4537,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/IndexedOperationBatch.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/IndexedOperationBatch.cs",
+      "sha256": "bbcbb27351a64a3e106aeb52a6a585e15bc2f1108f9c8050ea8a3501aadc700d",
+      "size": 3752,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/PackSettings.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/PackSettings.cs",
+      "sha256": "cade70dac09b44f30dd57d64fc755b958cda99b967ef99499fe1ef197e4fa348",
+      "size": 2477,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/PatchEngine.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/PatchEngine.cs",
+      "sha256": "bd859ce9f794bf905311833f0a78b6a9cf526d5d902b438bc036fb774e3f875e",
+      "size": 12882,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/PeerReadiness.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/PeerReadiness.cs",
+      "sha256": "4819942c7d8a2fd287ec01e459acd5a9073643b8e3a53407628928dc63920561",
+      "size": 91,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/ReadinessResult.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/ReadinessResult.cs",
+      "sha256": "40d62dba5837af1510c507a193cb1d20b6c534963906f21c21614473c9b40766",
+      "size": 129,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/RuntimeTestContent.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/RuntimeTestContent.cs",
+      "sha256": "c65863b6ddb4098f8192db76c4fa0baebe82b32e0af42f2158500641494496bf",
+      "size": 1288,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/ShelterConnectionBinding.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/ShelterConnectionBinding.cs",
+      "sha256": "f20d1fcb946a015a99aa0454e742a83c03654a7cb3c88ebf47c6d0c0bc0bb44c",
+      "size": 1292,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine/WeightedRoll.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine/WeightedRoll.cs",
+      "sha256": "bf89b03d055c42f0f2d3b22c2ba816ea793d94065f0e234dba240de3821fa09f",
+      "size": 569,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Frontier.Engine.csproj",
+      "original_group": "working/engine",
+      "original_relative_file": "Frontier.Engine.csproj",
+      "sha256": "9a5610469c23bcd4aed10e1d5d05895e46e98777517c4d364ce5b1ddf9f51a76",
+      "size": 454,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Engine/Properties/AssemblyInfo.cs",
+      "original_group": "working/engine",
+      "original_relative_file": "Properties/AssemblyInfo.cs",
+      "sha256": "fd84088033db97064f17b7fe24b9ddedb7027caa0548d3817e80494946079cc3",
+      "size": 336,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Frontier.Reserve.csproj",
+      "original_group": "working/reserve",
+      "original_relative_file": "Frontier.Reserve.csproj",
+      "sha256": "a7d4ef0c430676cca57c711c5dd006705a4e6d09db3b939faa16bacaa4eff0c3",
+      "size": 1132,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/AssemblyInfo.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/AssemblyInfo.cs",
+      "sha256": "b235579151172b7777eaa113520ceacd1ade74a652b2658c78ca43219ac11165",
+      "size": 229,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/Loader.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/Loader.cs",
+      "sha256": "89496b771d0d3adb65ccf43c284c9b9cd7ff2f822cff431f176b10623d1426ab",
+      "size": 8259,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/LocationModel.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/LocationModel.cs",
+      "sha256": "048e109d2fe9294b91006ff94c715ce496b7c17eedd79199f47ab006fac74172",
+      "size": 6999,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/LootProfiles.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/LootProfiles.cs",
+      "sha256": "d6a894aba6644921baa8aae7a46b7cd8792876bb4f78ee26283c49cd5034a59e",
+      "size": 8093,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/Menu.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/Menu.cs",
+      "sha256": "29730e439af669a1ff027b2233ba565dbea676092800e6dea733395cb111b0f6",
+      "size": 4072,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/NativeBotEquipment.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/NativeBotEquipment.cs",
+      "sha256": "248ccb0a88d10a0f421524c217b67aa27f07bc398fdeae871b5dc2ebdbe23be3",
+      "size": 4383,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/NativeEcsValues.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/NativeEcsValues.cs",
+      "sha256": "a18fb794ce69aaf06e70bab3fc1265dda64a1065310f0928c056752a81290ca0",
+      "size": 3768,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/NativeGeometry.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/NativeGeometry.cs",
+      "sha256": "91d45732c2fa2e32960d78080e9cab90f0ddf318a530155d2ae6ec895f5909b5",
+      "size": 9036,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/NativeHookContract.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/NativeHookContract.cs",
+      "sha256": "87d5aa7639f41c5fca8be3e1a0794366827188dd880e714415c099daf8b63d04",
+      "size": 3447,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/NativePlacements.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/NativePlacements.cs",
+      "sha256": "1de2438734aa3284aa89898809c48c347df439160b3aed9c4ec7177216785404",
+      "size": 9683,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/NativePrefabCatalog.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/NativePrefabCatalog.cs",
+      "sha256": "010fbdf71af41726304f69a1e99685108af46b86cc554c419f0d7c49622839f0",
+      "size": 5057,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/NativePrefabLayer.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/NativePrefabLayer.cs",
+      "sha256": "80b1fc6bb8f00716cbb83766b46675e80eebaa07e2ad399168e259dc030d1421",
+      "size": 5991,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/NativePrefabSources.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/NativePrefabSources.cs",
+      "sha256": "2ac9384611cadfe48694186aba571efe29772ad06cb33e4e2013d73ade7953e3",
+      "size": 4928,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/Navigation.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/Navigation.cs",
+      "sha256": "6877b0a92e7c5f521dc68dc8a6f436dea47ce1711d24b13cc04222d9beeb22ff",
+      "size": 5424,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/Plugin.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/Plugin.cs",
+      "sha256": "642bced30baec6fdc3d5cdcde9d7d12aad9d2291f05368822896206429aea8e6",
+      "size": 10040,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/PreparationEpoch.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/PreparationEpoch.cs",
+      "sha256": "f06de9b8507abc9f68c77d4a3e9a9a940740a6003c6548a8f58c1ca2cfc1eaef",
+      "size": 2808,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/Presentation.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/Presentation.cs",
+      "sha256": "1d21fcce93de2ebf27dc93d0f8e1c561f2e4a8af1e11ff1a820552fa7aaf3b6b",
+      "size": 2917,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/ReportFile.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/ReportFile.cs",
+      "sha256": "c27315e276dc2cc151168e773bdbd5f360f26bbcacd0a687d89208b7e8cb0bb0",
+      "size": 1326,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/Repositories.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/Repositories.cs",
+      "sha256": "6783c56999a72e07b236a3a688da0d25c7fa99a9f1808f0ee02833300a9a6806",
+      "size": 23376,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/ReserveButton.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/ReserveButton.cs",
+      "sha256": "0eab16ec5fe4b6fde59cfe2fb626505367aafe26f74b1dfdb5970c1cc1b90e11",
+      "size": 4322,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/SceneContract.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/SceneContract.cs",
+      "sha256": "672a7a356aeb2121d7712c8b72c230c82dad9310f8991b2c11870b18c929fdb9",
+      "size": 1448,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/Support.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/Support.cs",
+      "sha256": "67c7d2fb23ef3d1eff6067b34d06230d45d7c2e5ea58e4923ec7b45f202b15fa",
+      "size": 3595,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/TemplateContract.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/TemplateContract.cs",
+      "sha256": "ee477e0a048c58b041194eb18ef454ac5febc8397479da91dfbaf4f44776fd95",
+      "size": 2559,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Source/WorldBridge.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Source/WorldBridge.cs",
+      "sha256": "4cca31ae860250bf261589be05dc328dd0ec7524d08f2bde9a07191f31ef13e0",
+      "size": 5911,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Tests/ApiAudit.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Tests/ApiAudit.cs",
+      "sha256": "a8c8564808167ed2a3f4cf086269121a8b7ac9cc1bb9a75910cdbc9031a6be37",
+      "size": 2884,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Tests/ComposeTest.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Tests/ComposeTest.cs",
+      "sha256": "6242fee229dedefca3000790f67b6eee78b1c999f1b94511501b79ca32488656",
+      "size": 957,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Tests/GeometryTests.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Tests/GeometryTests.cs",
+      "sha256": "26d3a9d8689728f8ff64e2a07026c19e531818a7039e667929884fb833f4031f",
+      "size": 2666,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Reserve/Tests/HookPreflight.cs",
+      "original_group": "working/reserve",
+      "original_relative_file": "Tests/HookPreflight.cs",
+      "sha256": "51e321881c9480e1bd93fa1b3e91adc6e716ff474aadd606c0657b4ac4c5eebd",
+      "size": 990,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Frontier.Survivor.csproj",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Frontier.Survivor.csproj",
+      "sha256": "af5a6c0c6b49113d004ce88727c3e7c98485383812621cbae80ac391863285ec",
+      "size": 1308,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/AssemblyInfo.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/AssemblyInfo.cs",
+      "sha256": "5eb6fdd0509585665566bd5ee65beece43e16b58827444f28599f3104507b554",
+      "size": 218,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/GlobalAliases.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/GlobalAliases.cs",
+      "sha256": "f491508c44d0d29a700466b1833d7b2af2b17d2946ec68757a9226d136a1b8a6",
+      "size": 105,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/Loader.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/Loader.cs",
+      "sha256": "afd8bf5e2f418f5ca8a6ddaff68055da1f0da002059f69e83cddd655490bf8fd",
+      "size": 9997,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/LocationModel.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/LocationModel.cs",
+      "sha256": "df711735bcbec0b4e0a5219aa5c2ee3d73029f203c2f0a5ce31b6e1a5c457a3a",
+      "size": 7268,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/LootProfiles.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/LootProfiles.cs",
+      "sha256": "1c375be8d6b684e14ba1a2965673d3d5006a88ac3a478e75db0c11cc8513e9cf",
+      "size": 8597,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/Menu.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/Menu.cs",
+      "sha256": "93288c71c49318c85e47c0e9cb347eff022ab5470c5c4f1e515226eff1ca10dd",
+      "size": 4073,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/NativeBotEquipment.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/NativeBotEquipment.cs",
+      "sha256": "caa4db98916c344839ffc62e3159c28dfb8fee459dc671e457838270bb3e15e3",
+      "size": 4461,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/NativeEcsValues.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/NativeEcsValues.cs",
+      "sha256": "a6788b67a41511281bc7b5524d720672e8bc88df2e899e0f19914d8d1e8d69fa",
+      "size": 3769,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/NativeGeometry.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/NativeGeometry.cs",
+      "sha256": "8c98875b050c563a03d1539a2fb6d55d3bb324ba7024d7fd7f17449578d115d6",
+      "size": 5094,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/NativeHookContract.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/NativeHookContract.cs",
+      "sha256": "918b3fe229d11b9083530787f0c1027fdd04d3432c9ebaa809ea3f6dbf08eb9c",
+      "size": 3508,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/NativePlacements.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/NativePlacements.cs",
+      "sha256": "fec75ffe4cf717a9872e762a4461d04e4fac6e4e83d0c82b8dbe5bfe01e33d9b",
+      "size": 9738,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/NativePrefabCatalog.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/NativePrefabCatalog.cs",
+      "sha256": "e209f429c48e00f2c88069cb32f9bc7d90b213eb99f33e595ee926f93021472c",
+      "size": 5058,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/NativePrefabLayer.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/NativePrefabLayer.cs",
+      "sha256": "1360fac58b2d134f403fdafeb76c1f1b00a49aa6f4b5ccddbe4167ec9c5e0c7b",
+      "size": 5993,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/NativePrefabSources.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/NativePrefabSources.cs",
+      "sha256": "4ec78ad911eaa3732ffea21490528b5f55c4ed55a39ead16324c6fa2aa72859d",
+      "size": 5031,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/NativeStockArt.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/NativeStockArt.cs",
+      "sha256": "a665233fa2c2fcbe0d34536056250f28535f758dff56f64ec12592de935497f1",
+      "size": 15060,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/Navigation.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/Navigation.cs",
+      "sha256": "7d32c6cd0059a0196fdec71f85d0568e3dec792ee993d50e4924b083ae491093",
+      "size": 5425,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/Plugin.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/Plugin.cs",
+      "sha256": "bb8c2a320166c44551252e48e66cd9e10e9ffd464d0e2ec80d0f0d568656fe20",
+      "size": 10108,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/PreparationEpoch.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/PreparationEpoch.cs",
+      "sha256": "919e969f97137f5577676b76a81ba158d6bb8f9ec410cb5fe924e577808bbcd5",
+      "size": 2809,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/Presentation.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/Presentation.cs",
+      "sha256": "985a72a93366587fb2c9ea7dd4f30978f69f271b56c49193e5baf302a7e73f9c",
+      "size": 4039,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/ReportFile.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/ReportFile.cs",
+      "sha256": "127e8dfc0cd944233d6c71f3878a68ce13a22c8c4a1cb1a60b4552e429f4b0bc",
+      "size": 1359,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/Repositories.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/Repositories.cs",
+      "sha256": "d318bfdd85fac7fda57d32fafbae4b7d4bef0b0a063e7b2799229c0b68fb5c9f",
+      "size": 23685,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/ReserveButton.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/ReserveButton.cs",
+      "sha256": "40eefe3442cdf2687dfca45fde5305330a1891d15192e7931400355151d1dc61",
+      "size": 4371,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/RunProgress.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/RunProgress.cs",
+      "sha256": "7018fd88e73f0c7a02f5155bed93951876aba33930557dfa388aac7b736e609e",
+      "size": 2280,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/SceneContract.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/SceneContract.cs",
+      "sha256": "f22f770eb98b762ef8977d774bcf02aee97ce6b2fa2f0b6ded35ce3d8c98868e",
+      "size": 1477,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/Support.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/Support.cs",
+      "sha256": "3e4c5098d580ee42459095f93dcb069c7d5e15f023d7283ebb9d10d952c55edb",
+      "size": 3588,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/SurvivorHooks.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/SurvivorHooks.cs",
+      "sha256": "d34be492a87d0d726aa1fc83bc467656f8fc5b4d1270668e8a6fbd7216f84bf7",
+      "size": 5644,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/SurvivorHud.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/SurvivorHud.cs",
+      "sha256": "24af1e3cba22f0c92e22a66667bca35cb413e64e567a046463d3c9137199f257",
+      "size": 4969,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/SurvivorRanks.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/SurvivorRanks.cs",
+      "sha256": "132a61ac88875f1db76376916cd3e847f620345799b52a2cc2530f2cb8a602f0",
+      "size": 3389,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/SurvivorRun.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/SurvivorRun.cs",
+      "sha256": "fdf2f79d4d94d4b4915d4929f5b730f8d37879304d8252d60004ec6d8df13caf",
+      "size": 12058,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/TemplateContract.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/TemplateContract.cs",
+      "sha256": "ea20b5c3e889a09de525e319c18d113815098a54868bbb6d6b778a72af0deb9e",
+      "size": 2560,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Source/WorldBridge.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Source/WorldBridge.cs",
+      "sha256": "d3967597007281eeba74764a73749b194b2224be4b78ac2979bef0a95cb43966",
+      "size": 5975,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Tests/ApiAudit.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Tests/ApiAudit.cs",
+      "sha256": "87e722379edcc967f79e6ad1e58950fd9531fae23c0024eb0b020097d84fbb1c",
+      "size": 2924,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Tests/ComposeTest.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Tests/ComposeTest.cs",
+      "sha256": "f960b29191ed00a1fe1a479bc4beaebf124e75202566cadb35ba27e7035f5761",
+      "size": 960,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Tests/GeometryTests.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Tests/GeometryTests.cs",
+      "sha256": "21f6352899360d75023f0a22dce418a5283eceba7f4fdf4c7b0e84cbbceddd42",
+      "size": 2688,
+      "newly_imported": false
+    },
+    {
+      "path": "src/Survivor/Tests/HookPreflight.cs",
+      "original_group": "historical/survivor-work",
+      "original_relative_file": "Tests/HookPreflight.cs",
+      "sha256": "d0926996f97457a4faf1b4f1e1b20ec741543d37800137efa4ee87851fa3563b",
+      "size": 994,
+      "newly_imported": false
+    }
+  ]
+}
