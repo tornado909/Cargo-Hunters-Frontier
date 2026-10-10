@@ -48,3 +48,10 @@ Workflow **.github/workflows/build-release.yml** запускается вруч
 В репозитории сохранены авторские исходники прошлых версий Frontier. См. [реестр происхождения](docs/AUTHORED_SOURCE_RECOVERY.md) и [манифест SHA-256](docs/source-archive-manifest.json). Среди них первоначальный Core 0.2/0.3, исходники Reserve и кандидат Survivor-Coop. Эти материалы не являются декомпиляцией текущих DLL.
 
 Через [Source candidate builds](.github/workflows/build-authored-sources.yml) можно отдельно собрать Engine, Reserve и Survivor-Coop на проверенных игровых референсах. Это не изменяет стабильный Release v0.1.0: результаты кандидатов не подменяют работающие DLL до игрового тестирования.
+
+
+### 32 восстановленных runtime-проекта Frontier
+
+В [src/Recovered](src/Recovered) доступны **32 компилируемых C# проекта** для всех DLL FrontierPack и [контрольный манифест](docs/recovered-module-manifest.json). Проекты явно помечены как восстановленные из бинарников, а **не как оригинальные авторские исходники**. Они проходят сверку публичного API с рабочими DLL, но пока **не могут автоматически заменять их в релизе**.
+
+Отдельный [GitHub Actions workflow](.github/workflows/build-recovered-modules.yml) собирает все 32 проекта и проверяет API на соответствующих IL2CPP-библиотеках. Подробности: [RECOVERED_MODULES.md](docs/RECOVERED_MODULES.md).

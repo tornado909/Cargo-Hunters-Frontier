@@ -1,0 +1,81 @@
+name: Build and audit 32 recovered Frontier DLL candidates
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontier-recovery-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  candidate-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Audit source provenance and hashes
+        run: |
+          python3 scripts/verify-authored-sources.py
+          python3 scripts/verify-recovered-sources.py
+
+      - name: Install .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Download encrypted version-pinned game references
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p .ci-private
+          gh release download ci-inputs-20261011 --repo "$GITHUB_REPOSITORY" \
+            --pattern frontier-ci-inputs.tar.gz.gpg --dir .ci-private
+
+      - name: Decrypt references in temporary GitHub runner
+        env:
+          FRONTIER_CI_INPUTS_PASSPHRASE: ${{ secrets.FRONTIER_CI_INPUTS_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          test -n "$FRONTIER_CI_INPUTS_PASSPHRASE"
+          printf '%s' "$FRONTIER_CI_INPUTS_PASSPHRASE" |
+            gpg --batch --quiet --yes --pinentry-mode loopback \
+              --passphrase-fd 0 --decrypt \
+              --output .ci-private/ci-inputs.tar.gz \
+              .ci-private/frontier-ci-inputs.tar.gz.gpg
+          tar -xzf .ci-private/ci-inputs.tar.gz -C .ci-private
+          rm -f .ci-private/ci-inputs.tar.gz .ci-private/frontier-ci-inputs.tar.gz.gpg
+
+      - name: Verify original version-pinned game ABI and source baseline
+        run: python3 scripts/verify-ci-inputs.py --input-dir .ci-private
+
+      - name: Stage only 32 verified plugin DLL dependencies inside private CI area
+        run: python3 scripts/stage-recovered-references.py
+
+      - name: Compile managed public API metadata comparison tool
+        run: dotnet build src/Tools/ApiSurfaceAudit/ApiSurfaceAudit.csproj -c Release --nologo
+
+      - name: Compile 32 recovered C# projects and audit API signatures
+        run: python3 scripts/build-recovered-modules.py --input-dir .ci-private
+
+      - name: Check explicit non-shipping report
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('.ci-private/recovered-audit.json').read_text())
+          assert data['compiled_count']==data['public_api_pass']==32
+          assert data['shipping_approved'] is False
+          print('PASS: 32/32 source compilation and public .NET API checks. Candidates only; stable game/release untouched.')
+          PY
+
+      - name: Delete decrypted game references and audit outputs
+        if: always()
+        run: rm -rf .ci-private

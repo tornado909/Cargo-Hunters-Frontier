@@ -29,6 +29,8 @@ jobs:
           echo "PASS: clean source-only snapshot"
       - name: Verify preserved original C# sources
         run: python3 scripts/verify-authored-sources.py
+      - name: Verify isolated 32 DLL recovery candidates and SHA-256
+        run: python3 scripts/verify-recovered-sources.py
 
   managed-survivor-progression:
     runs-on: ubuntu-latest

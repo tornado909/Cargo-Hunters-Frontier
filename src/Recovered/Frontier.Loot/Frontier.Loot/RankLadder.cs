@@ -1,0 +1,725 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using Core.Utils;
+using Frontier.Modular;
+using Game.AISystem;
+using Game.AttributeSystem;
+using Game.AttributeSystem.AttributeModification;
+using Game.GameModes;
+using Game.ItemsSystem;
+using Game.ItemsSystem.ItemComponents;
+using Game.SpawnPointSystem.BotSpawnPoints;
+using Game.SpawnPointSystem.BotSpawnPoints.Data;
+using HarmonyLib;
+using Il2CppInterop.Runtime.InteropTypes;
+using Il2CppSystem.Collections.Generic;
+
+namespace Frontier.Loot;
+
+public static class RankLadder
+{
+	private sealed class SpawnSelection
+	{
+		internal BotPresetData Preset;
+
+		internal int Rank;
+
+		internal string RankedId = "";
+
+		internal string BaseId = "";
+
+		internal int EquipmentEntries;
+
+		internal string EquipmentId = "";
+
+		internal string PlatformId = "";
+
+		internal string LootId = "";
+	}
+
+	private static readonly System.Collections.Generic.Dictionary<string, Trait> Cache = new System.Collections.Generic.Dictionary<string, Trait>(StringComparer.Ordinal);
+
+	private static readonly System.Collections.Generic.Queue<string> CacheOrder = new System.Collections.Generic.Queue<string>();
+
+	private static readonly System.Collections.Generic.Dictionary<long, (string Owner, long Data)> NativeApplied = new System.Collections.Generic.Dictionary<long, (string, long)>();
+
+	private static readonly System.Collections.Generic.Dictionary<(long Session, int Player, string Weapon), (long Until, Bonuses Value)> BotBonusCache = new System.Collections.Generic.Dictionary<(long, int, string), (long, Bonuses)>();
+
+	private static readonly System.Collections.Generic.Dictionary<string, int> EquipmentRanks = new System.Collections.Generic.Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+	private static readonly HashSet<string> SpawnIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+	private static readonly System.Collections.Generic.Dictionary<long, SpawnSelection> SelectedSpawns = new System.Collections.Generic.Dictionary<long, SpawnSelection>();
+
+	private static readonly System.Collections.Generic.Dictionary<string, int> RankById = new System.Collections.Generic.Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+	private static string salt = Guid.NewGuid().ToString("N");
+
+	private static bool active;
+
+	[ThreadStatic]
+	private static bool building;
+
+	private static Type? presentation;
+
+	private static Type? rankStyle;
+
+	public static LadderData? Data { get; private set; }
+
+	public static bool Active => active;
+
+	public static void Load(string root, LootDatabase db)
+	{
+		if (!ModuleRuntime.Feature("rarity-ladder"))
+		{
+			return;
+		}
+		Data = JsonSerializer.Deserialize<LadderData>(File.ReadAllText(Path.Combine(root, "modules", "rarity-ladder", "rank28.json")), new JsonSerializerOptions
+		{
+			PropertyNameCaseInsensitive = true
+		}) ?? throw new InvalidDataException("Rank28 metadata missing");
+		if (Data.Schema != 1 || Data.Version != "rank28-v1")
+		{
+			throw new InvalidDataException("Unknown instance rank policy");
+		}
+		BalanceConfiguration balanceConfiguration = BalanceConfiguration.Load(Path.Combine(root, "modules", "rarity-ladder", "legacy-l3-s3.json"));
+		if (balanceConfiguration.Families.Count != Data.Families.Count)
+		{
+			throw new InvalidDataException("Balance anchor coverage mismatch");
+		}
+		foreach (System.Collections.Generic.KeyValuePair<string, string[]> family in Data.Families)
+		{
+			if (!balanceConfiguration.Families.TryGetValue(family.Key, out BalanceProfile value) || !db.Families.TryGetValue(family.Key, out Family value2) || value2.Variants[11] != value.AnchorTemplate || value2.Category != value.Category || value2.SubCategory != value.SubCategory)
+			{
+				throw new InvalidDataException("Legacy L3 anchor identity mismatch");
+			}
+		}
+		InstanceStats.Configure(balanceConfiguration);
+		RankPolicy.Pick(0.5, Data.OrdinaryWeights);
+		RankPolicy.Pick(0.5, Data.EnemyWeights);
+		foreach (System.Collections.Generic.KeyValuePair<string, string[]> family2 in Data.Families)
+		{
+			if (family2.Value.Length != 28 || !db.Families.ContainsKey(family2.Key))
+			{
+				throw new InvalidDataException("Invalid 28-entry family");
+			}
+			for (int i = 0; i < 28; i++)
+			{
+				if (!db.Variants.TryGetValue(family2.Value[i], out Trait value3) || value3.Base != family2.Key || value3.RankIndex != i + 1)
+				{
+					throw new InvalidDataException("Rank family index mismatch");
+				}
+			}
+		}
+		string[] spawnAllowlist = Data.SpawnAllowlist;
+		foreach (string item in spawnAllowlist)
+		{
+			SpawnIds.Add(item);
+		}
+		foreach (System.Collections.Generic.KeyValuePair<string, int> botRank in Data.BotRanks)
+		{
+			RankById[botRank.Key] = botRank.Value;
+		}
+		Runtime.Inc("rank28Families", Data.Families.Count);
+	}
+
+	public static string Select(string baseId, string key, string context, out int tier)
+	{
+		tier = 0;
+		if (Data == null || !Data.Families.TryGetValue(baseId, out string[] value))
+		{
+			return baseId;
+		}
+		double sample = LootMath.Sample(key, 0u, "rank28-quality-v1");
+		int num = RankPolicy.Parse(context);
+		double[] array = Data.OrdinaryWeights;
+		if (num > 0)
+		{
+			array = new double[28];
+			double num2 = Math.Max(1, num - 3);
+			double num3 = 3.2;
+			for (int i = 0; i < 28; i++)
+			{
+				array[i] = 0.12 * Data.OrdinaryWeights[i] + 0.88 * Math.Exp((0.0 - Math.Pow(((double)(i + 1) - num2) / num3, 2.0)) / 2.0);
+			}
+		}
+		tier = RankPolicy.Pick(sample, array);
+		return value[tier - 1];
+	}
+
+	public static Trait Resolve(IItem item, Trait t)
+	{
+		if (t.RankIndex <= 0 || Data == null)
+		{
+			return t;
+		}
+		return Resolve(t, Runtime.Id(item.Id));
+	}
+
+	public static Trait Resolve(Trait t, string id)
+	{
+		if (t.RankIndex <= 0)
+		{
+			return t;
+		}
+		string text = id + "|" + t.Base + "|" + t.RankIndex;
+		lock (Cache)
+		{
+			if (Cache.TryGetValue(text, out Trait value))
+			{
+				return value;
+			}
+			Trait trait = Roll(t, id);
+			Cache[text] = trait;
+			CacheOrder.Enqueue(text);
+			while (CacheOrder.Count > 16384)
+			{
+				Cache.Remove(CacheOrder.Dequeue());
+			}
+			return trait;
+		}
+	}
+
+	public static Trait Roll(Trait t, string id)
+	{
+		return InstanceStats.Roll(t, id);
+	}
+
+	public static bool NewItem(IItem? item)
+	{
+		if (item != null && Runtime.Db != null && Runtime.Db.Variants.TryGetValue(Runtime.Id(item.TemplateId), out Trait value))
+		{
+			return value.RankIndex > 0;
+		}
+		return false;
+	}
+
+	public static void Materialize(IItem? item)
+	{
+		if (item == null || !NewItem(item) || building || Runtime.InNativeBotAssembly)
+		{
+			return;
+		}
+		Item item2 = ((Il2CppObjectBase)item).TryCast<Item>();
+		if (item2 == null || item2._template == null || Runtime.Id(item.Id) == Runtime.Id(item.TemplateId))
+		{
+			return;
+		}
+		InstanceStructure.Ensure(item, item2);
+		Trait trait = Resolve(item, Runtime.Db.Variants[Runtime.Id(item.TemplateId)]);
+		AttributeModifierComponent attributeModifierComponent = item.GetComponent<AttributeModifierComponent>();
+		long key = ((attributeModifierComponent != null) ? ((Il2CppObjectBase)attributeModifierComponent).Pointer.ToInt64() : 0);
+		if (attributeModifierComponent != null && NativeApplied.TryGetValue(key, out (string, long) value) && value.Item1 == Runtime.Id(item.Id))
+		{
+			long item3 = value.Item2;
+			AttributeModifierComponent.ReadonlyData data = attributeModifierComponent._data;
+			if (item3 == ((data != null) ? ((Il2CppObjectBase)data).Pointer.ToInt64() : 0))
+			{
+				return;
+			}
+		}
+		try
+		{
+			building = true;
+			if (attributeModifierComponent == null)
+			{
+				attributeModifierComponent = new AttributeModifierComponent();
+				attributeModifierComponent.Initialize(item);
+				if (!item.AddComponent(((Il2CppObjectBase)attributeModifierComponent).TryCast<IItemComponent>()))
+				{
+					throw new InvalidOperationException("Cannot attach deterministic modifier component");
+				}
+			}
+			Il2CppSystem.Collections.Generic.List<AttributeModifierComponent.AttributeModificationSettings> list = item2._template.GetComponent<AttributeModifierComponent>()?._data?.AttributeSourceModificationList;
+			Il2CppSystem.Collections.Generic.List<AttributeModifierComponent.AttributeModificationSettings> list2 = new Il2CppSystem.Collections.Generic.List<AttributeModifierComponent.AttributeModificationSettings>();
+			Il2CppSystem.Collections.Generic.List<IAttributeModifier> list3 = new Il2CppSystem.Collections.Generic.List<IAttributeModifier>();
+			foreach (System.Collections.Generic.KeyValuePair<int, float> item4 in trait.Native)
+			{
+				if (item4.Key == 20)
+				{
+					AttributeAbsoluteModifier attributeAbsoluteModifier = new AttributeAbsoluteModifier
+					{
+						AttributeId = (AttributeId)item4.Key,
+						AbsoluteChange = item4.Value,
+						ApplyBeforeRelativeModifiers = true
+					};
+					list3.Add(((Il2CppObjectBase)attributeAbsoluteModifier).TryCast<IAttributeModifier>() ?? throw new InvalidOperationException("Native modifier interface unavailable"));
+				}
+				else
+				{
+					AttributeRelativeModifier attributeRelativeModifier = new AttributeRelativeModifier
+					{
+						AttributeId = (AttributeId)item4.Key,
+						RelativeChange = item4.Value
+					};
+					list3.Add(((Il2CppObjectBase)attributeRelativeModifier).TryCast<IAttributeModifier>() ?? throw new InvalidOperationException("Native modifier interface unavailable"));
+				}
+			}
+			AttributeModificationsSource attributeModificationsSource = new AttributeModificationsSource(list3);
+			AttributeSourceActivationType attributeSourceActivationType = ((trait.Category == 13) ? AttributeSourceActivationType.Equipped : AttributeSourceActivationType.InUse);
+			bool flag = false;
+			if (list != null)
+			{
+				if (list.Count > 128)
+				{
+					throw new InvalidDataException("Modifier count bound");
+				}
+				for (int i = 0; i < list.Count; i++)
+				{
+					AttributeModifierComponent.AttributeModificationSettings attributeModificationSettings = list[i];
+					if (attributeModificationSettings.ActivationType == attributeSourceActivationType && attributeModificationSettings.StateType == AttributeSourceStateType.Default && !flag)
+					{
+						AttributeModificationsSourceGroup attributeModificationsSourceGroup = new AttributeModificationsSourceGroup();
+						if (attributeModificationSettings.AttributeModificationSource != null)
+						{
+							attributeModificationsSourceGroup.Add(attributeModificationSettings.AttributeModificationSource);
+						}
+						attributeModificationsSourceGroup.Add(((Il2CppObjectBase)attributeModificationsSource).TryCast<IAttributeModificationSource>());
+						list2.Add(new AttributeModifierComponent.AttributeModificationSettings
+						{
+							ActivationType = attributeSourceActivationType,
+							StateType = AttributeSourceStateType.Default,
+							AttributeModificationSource = ((Il2CppObjectBase)attributeModificationsSourceGroup).TryCast<IAttributeModificationSource>()
+						});
+						flag = true;
+					}
+					else
+					{
+						list2.Add(attributeModificationSettings);
+					}
+				}
+			}
+			if (!flag)
+			{
+				list2.Add(new AttributeModifierComponent.AttributeModificationSettings
+				{
+					ActivationType = attributeSourceActivationType,
+					StateType = AttributeSourceStateType.Default,
+					AttributeModificationSource = ((Il2CppObjectBase)attributeModificationsSource).TryCast<IAttributeModificationSource>()
+				});
+			}
+			attributeModifierComponent._data = new AttributeModifierComponent.ReadonlyData
+			{
+				AttributeSourceModificationList = list2
+			};
+			if (NativeApplied.Count > 32768)
+			{
+				NativeApplied.Clear();
+			}
+			NativeApplied[((Il2CppObjectBase)attributeModifierComponent).Pointer.ToInt64()] = (Runtime.Id(item.Id), ((Il2CppObjectBase)attributeModifierComponent._data).Pointer.ToInt64());
+			Runtime.Inc("rank28InstanceModifiers", 1L);
+		}
+		finally
+		{
+			building = false;
+		}
+	}
+
+	public static System.Collections.Generic.Dictionary<int, double> Attributes(IItem item)
+	{
+		if (!Runtime.Db.Variants.TryGetValue(Runtime.Id(item.TemplateId), out Trait value) || value.RankIndex <= 0)
+		{
+			return new System.Collections.Generic.Dictionary<int, double>();
+		}
+		return ((System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int, float>>)Resolve(item, value).Native).ToDictionary((Func<System.Collections.Generic.KeyValuePair<int, float>, int>)((System.Collections.Generic.KeyValuePair<int, float> k) => k.Key), (Func<System.Collections.Generic.KeyValuePair<int, float>, double>)((System.Collections.Generic.KeyValuePair<int, float> k) => k.Value));
+	}
+
+	public static string Describe(IItem item, string fallback)
+	{
+		if (!Runtime.Db.Variants.TryGetValue(Runtime.Id(item.TemplateId), out Trait value) || value.RankIndex <= 0)
+		{
+			return fallback;
+		}
+		Trait trait = Resolve(item, value);
+		StringBuilder b = new StringBuilder();
+		b.Append("<b>").Append(RankPolicy.Name(trait.RankIndex)).AppendLine("</b>");
+		Row("Урон", trait.Damage * 100f);
+		Row("Шанс крита", trait.Crit * 100f, " п.п.");
+		Row("Множитель крита", trait.CritPower, "");
+		Row("Экономия патронов", trait.SaveAmmo * 100f);
+		Row("Темп огня", trait.FireRate * 100f);
+		Row("Пробитие", trait.Penetration, " кл.");
+		if (trait.Executor)
+		{
+			b.AppendLine("Экзекутор: попадания направляют урон в голову.");
+		}
+		foreach (System.Collections.Generic.KeyValuePair<int, float> item2 in trait.Native)
+		{
+			int key = item2.Key;
+			if (key != 11 && key != 30)
+			{
+				Row(item2.Key switch
+				{
+					29 => "Запас энергии", 
+					2 => "Расход энергии на спринт", 
+					20 => "Грузоподъёмность", 
+					1 => "Время обыска", 
+					8 => "Время лечения", 
+					5 => "Скорость спринта", 
+					12 => "Время перезарядки", 
+					10 => "Стабилизация отдачи", 
+					17 => "Время прицеливания", 
+					13 => "Смена оружия", 
+					73 => "Дальность урона", 
+					_ => "", 
+				}, item2.Value * (float)((item2.Key == 20) ? 1 : 100), (item2.Key == 20) ? " кг" : "%");
+			}
+		}
+		return b.ToString().TrimEnd();
+		void Row(string n, double v, string suffix = "%")
+		{
+			if (n.Length > 0 && Math.Abs(v) > 1E-05)
+			{
+				b.Append(n).Append(": ").Append((v >= 0.0) ? "+" : "")
+					.Append(v.ToString("0.##", CultureInfo.InvariantCulture))
+					.AppendLine(suffix);
+			}
+		}
+	}
+
+	public static void Activate(Harmony h)
+	{
+		//IL_0039: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0040: Expected O, but got Unknown
+		//IL_0089: Unknown result type (might be due to invalid IL or missing references)
+		//IL_0097: Expected O, but got Unknown
+		//IL_02a1: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02ae: Expected O, but got Unknown
+		//IL_02d0: Unknown result type (might be due to invalid IL or missing references)
+		//IL_02de: Expected O, but got Unknown
+		if (active || Data == null)
+		{
+			return;
+		}
+		Harmony obj = h;
+		MethodInfo methodInfo = RankHookPlan.Factory();
+		HarmonyMethod val = new HarmonyMethod(typeof(RankLadder).GetMethod("AfterCreate", BindingFlags.Static | BindingFlags.NonPublic));
+		val.priority = 0;
+		val.after = new string[1] { "frontier.cargohunters.loot050" };
+		obj.Patch((MethodBase)methodInfo, (HarmonyMethod)null, val, (HarmonyMethod)null, (HarmonyMethod)null, (HarmonyMethod)null);
+		h.Patch((MethodBase)RankHookPlan.Modifiers(), new HarmonyMethod(typeof(RankLadder).GetMethod("BeforeModifiers", BindingFlags.Static | BindingFlags.NonPublic)), (HarmonyMethod)null, (HarmonyMethod)null, (HarmonyMethod)null, (HarmonyMethod)null);
+		Assembly assembly = AppDomain.CurrentDomain.GetAssemblies().Single((Assembly a) => a.GetName().Name == "Frontier.Core");
+		Assembly assembly2 = AppDomain.CurrentDomain.GetAssemblies().Single((Assembly a) => a.GetName().Name == "Frontier.Engine");
+		presentation = assembly.GetType("Frontier.Core.ElitePresentation", throwOnError: true);
+		rankStyle = presentation.GetNestedType("RankStyle", BindingFlags.Public | BindingFlags.NonPublic);
+		IDictionary dictionary = (IDictionary)presentation.GetField("Styles", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+		IDictionary dictionary2 = (IDictionary)presentation.GetField("ByPreset", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+		foreach (System.Collections.Generic.KeyValuePair<string, LadderStyle> style in Data.Styles)
+		{
+			dictionary[style.Key] = Activator.CreateInstance(rankStyle, style.Key, style.Value.NameRu, style.Value.Color);
+		}
+		foreach (System.Collections.Generic.KeyValuePair<string, int> botRank in Data.BotRanks)
+		{
+			dictionary2[botRank.Key] = RankPolicy.Name(botRank.Value);
+		}
+		Type? type = assembly2.GetType("Frontier.Engine.EliteVisualProtocol", throwOnError: true);
+		Managed(type, "ValidRank", "ValidRank");
+		Managed(type, "Code", "Code");
+		Managed(type, "Rank", "Decode");
+		Managed(assembly.GetType("Frontier.Core.EnemyRoller", throwOnError: true), "Replace", "ReplaceEnemy");
+		h.Patch((MethodBase)RankHookPlan.Equipment(), (HarmonyMethod)null, new HarmonyMethod(typeof(RankLadder).GetMethod("Equipment", BindingFlags.Static | BindingFlags.NonPublic)), (HarmonyMethod)null, (HarmonyMethod)null, (HarmonyMethod)null);
+		h.Patch((MethodBase)RankHookPlan.Raid(), new HarmonyMethod(typeof(RankLadder).GetMethod("NewRaid", BindingFlags.Static | BindingFlags.NonPublic)), (HarmonyMethod)null, (HarmonyMethod)null, (HarmonyMethod)null, (HarmonyMethod)null);
+		LadderVisuals.Install(h);
+		active = true;
+		Runtime.WriteReport();
+		Runtime.Log.LogInfo((object)"Rank28 v10.8.12: per-model legacy L3 anchors at S3; specialized stats and existing-instance refresh; native spawn/alias pipeline unchanged.");
+		void Managed(Type type2, string method, string fn)
+		{
+			//IL_0021: Unknown result type (might be due to invalid IL or missing references)
+			//IL_002f: Expected O, but got Unknown
+			h.Patch((MethodBase)type2.GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic), new HarmonyMethod(typeof(RankLadder).GetMethod(fn, BindingFlags.Static | BindingFlags.NonPublic)), (HarmonyMethod)null, (HarmonyMethod)null, (HarmonyMethod)null, (HarmonyMethod)null);
+		}
+	}
+
+	private static void AfterCreate(IItem __result)
+	{
+		try
+		{
+			Materialize(__result);
+		}
+		catch (Exception e)
+		{
+			Runtime.Error("rank28.materialize", e);
+		}
+	}
+
+	private static void BeforeModifiers(AttributeModifierComponent __instance)
+	{
+		try
+		{
+			Materialize(__instance.Owner);
+		}
+		catch (Exception e)
+		{
+			Runtime.Error("rank28.modifier", e);
+		}
+	}
+
+	private static bool ValidRank(string __0, ref bool __result)
+	{
+		if (RankPolicy.Parse(__0) == 0)
+		{
+			return true;
+		}
+		__result = true;
+		return false;
+	}
+
+	private static bool Code(string __0, ref char __result)
+	{
+		int num = RankPolicy.Parse(__0);
+		if (num == 0)
+		{
+			return true;
+		}
+		__result = RankPolicy.Encode(num);
+		return false;
+	}
+
+	private static bool Decode(char __0, ref string __result)
+	{
+		int num = RankPolicy.Decode(__0);
+		if (num == 0)
+		{
+			return true;
+		}
+		__result = RankPolicy.Name(num);
+		return false;
+	}
+
+	private static void NewRaid()
+	{
+		salt = Guid.NewGuid().ToString("N");
+		EquipmentRanks.Clear();
+		SelectedSpawns.Clear();
+		BotBonusCache.Clear();
+		NativeApplied.Clear();
+		LadderVisuals.Reset();
+	}
+
+	internal static BotPresetData CopySpawnRecipe(BotPresetData original, BotPresetData rankTemplate)
+	{
+		BotSpawnRecipe<UniqueId, Il2CppSystem.Collections.Generic.List<BotEquipmentPresetData.PresetEquipment>> botSpawnRecipe = new BotSpawnRecipe<UniqueId, Il2CppSystem.Collections.Generic.List<BotEquipmentPresetData.PresetEquipment>>(original.Id, original.Alias, original.AISettingId, original.PlatformPresetId, original.EquipmentPresetId, original.LootPresetId, original.Equipments, original.OverrideBotAccountLevel).WithRankAI(rankTemplate.AISettingId);
+		return new BotPresetData
+		{
+			Id = botSpawnRecipe.Id,
+			Alias = botSpawnRecipe.Alias,
+			AISettingId = botSpawnRecipe.AISettingId,
+			PlatformPresetId = botSpawnRecipe.PlatformPresetId,
+			EquipmentPresetId = botSpawnRecipe.EquipmentPresetId,
+			LootPresetId = botSpawnRecipe.LootPresetId,
+			Equipments = botSpawnRecipe.Equipments,
+			OverrideBotAccountLevel = botSpawnRecipe.OverrideBotAccountLevel
+		};
+	}
+
+	internal static bool SpawnRecipeMatches(BotPresetData original, BotPresetData selected)
+	{
+		if (Runtime.Id(selected.Id) == Runtime.Id(original.Id) && Runtime.Id(selected.PlatformPresetId) == Runtime.Id(original.PlatformPresetId) && Runtime.Id(selected.EquipmentPresetId) == Runtime.Id(original.EquipmentPresetId) && Runtime.Id(selected.LootPresetId) == Runtime.Id(original.LootPresetId) && selected.OverrideBotAccountLevel == original.OverrideBotAccountLevel)
+		{
+			Il2CppSystem.Collections.Generic.List<BotEquipmentPresetData.PresetEquipment> equipments = selected.Equipments;
+			IntPtr intPtr = ((equipments != null) ? ((Il2CppObjectBase)equipments).Pointer : IntPtr.Zero);
+			Il2CppSystem.Collections.Generic.List<BotEquipmentPresetData.PresetEquipment> equipments2 = original.Equipments;
+			return intPtr == ((equipments2 != null) ? ((Il2CppObjectBase)equipments2).Pointer : IntPtr.Zero);
+		}
+		return false;
+	}
+
+	internal static string CreationRank(BotPresetData preset)
+	{
+		if (preset != null && SelectedSpawns.TryGetValue(((Il2CppObjectBase)preset).Pointer.ToInt64(), out SpawnSelection value))
+		{
+			return RankPolicy.Name(value.Rank);
+		}
+		if (preset != null)
+		{
+			return Runtime.Db.BotRanks.GetValueOrDefault(Runtime.Id(preset.Id), "normal");
+		}
+		return "normal";
+	}
+
+	private static bool ReplaceEnemy(object __0, object __1, object __2, ref string __3, ref object __result)
+	{
+		if (Data == null)
+		{
+			return true;
+		}
+		__result = null;
+		__3 = null;
+		try
+		{
+			object obj = ((__0 is Il2CppObjectBase) ? __0 : null);
+			BotSpawnPointEquipmentManager botSpawnPointEquipmentManager = ((obj != null) ? ((Il2CppObjectBase)obj).TryCast<BotSpawnPointEquipmentManager>() : null);
+			object obj2 = ((__2 is Il2CppObjectBase) ? __2 : null);
+			BotPresetData botPresetData = ((obj2 != null) ? ((Il2CppObjectBase)obj2).TryCast<BotPresetData>() : null);
+			if (botSpawnPointEquipmentManager == null || botPresetData == null || botSpawnPointEquipmentManager._itemsManager == null || !botSpawnPointEquipmentManager._itemsManager.IsAuthoritative || !SpawnIds.Contains(__1?.ToString() ?? ""))
+			{
+				return false;
+			}
+			if (!Data.BotVariants.TryGetValue(Runtime.Id(botPresetData.Id), out string[] value))
+			{
+				return false;
+			}
+			if (SelectedSpawns.Count >= 4096)
+			{
+				Runtime.Inc("rank28SpawnSelectionCapacityFallback", 1L);
+				return false;
+			}
+			int num = RankPolicy.Pick(LootMath.Sample(salt + "|" + __1?.ToString() + "|" + Runtime.Id(botPresetData.Id), 0u, "rank28-enemy"), Data.EnemyWeights);
+			IBotPresetDataRepository botPresetDataRepository = botSpawnPointEquipmentManager._botPresetDataRepository;
+			BotPresetData data = (((botPresetDataRepository != null) ? ((Il2CppObjectBase)botPresetDataRepository).TryCast<BotPresetDataRepository>() : null) ?? throw new InvalidDataException("No concrete native bot repository")).GetData(UniqueId.Parse(value[num - 1]));
+			if (data == null || Runtime.Id(data.Id) != value[num - 1])
+			{
+				throw new InvalidDataException("Rank28 bot preset missing from native repository");
+			}
+			BotPresetData botPresetData2 = CopySpawnRecipe(botPresetData, data);
+			if (!SpawnRecipeMatches(botPresetData, botPresetData2))
+			{
+				throw new InvalidDataException("Rank28 altered native spawn recipe");
+			}
+			SpawnSelection spawnSelection = new SpawnSelection
+			{
+				Preset = botPresetData2,
+				Rank = num,
+				RankedId = value[num - 1],
+				BaseId = Runtime.Id(botPresetData.Id),
+				EquipmentEntries = (botPresetData.Equipments?.Count ?? 0),
+				EquipmentId = Runtime.Id(botPresetData.EquipmentPresetId),
+				PlatformId = Runtime.Id(botPresetData.PlatformPresetId),
+				LootId = Runtime.Id(botPresetData.LootPresetId)
+			};
+			SelectedSpawns[((Il2CppObjectBase)botPresetData2).Pointer.ToInt64()] = spawnSelection;
+			__result = botPresetData2;
+			__3 = RankPolicy.Name(num) + " | native recipe | " + spawnSelection.BaseId;
+			Runtime.Inc("rank28Enemies." + RankPolicy.Name(num), 1L);
+			Runtime.Inc("rank28SpawnRecipesPreserved", 1L);
+			if (spawnSelection.EquipmentEntries > 0)
+			{
+				Runtime.Inc("rank28SpawnRecipesWithRuntimeEquipment", 1L);
+			}
+			return false;
+		}
+		catch (Exception e)
+		{
+			Runtime.Inc("rank28NativePresetFallbacks", 1L);
+			Runtime.Error("rank28.enemy-selection", e);
+			return false;
+		}
+	}
+
+	private static void Equipment(AiCharacterSpawnSystem __instance, BotPresetData __1, Equipment __result)
+	{
+		if (Data == null || __1 == null)
+		{
+			return;
+		}
+		SelectedSpawns.TryGetValue(((Il2CppObjectBase)__1).Pointer.ToInt64(), out SpawnSelection value);
+		try
+		{
+			if (__instance == null || __instance._battleSession == null || !__instance._battleSession.IsAuthoritative)
+			{
+				return;
+			}
+			int value2 = value?.Rank ?? 0;
+			string text = value?.RankedId ?? Runtime.Id(__1.Id);
+			if (value2 == 0 && !RankById.TryGetValue(text, out value2))
+			{
+				return;
+			}
+			Runtime.Inc("rank28EquipmentAttempts", 1L);
+			if (__result == null)
+			{
+				Runtime.Inc("rank28EquipmentNull", 1L);
+				Runtime.Error("rank28.native-equipment", new InvalidOperationException("Native equipment returned null; base=" + Runtime.Id(__1.Id) + "; equipment=" + Runtime.Id(__1.EquipmentPresetId) + "; platform=" + Runtime.Id(__1.PlatformPresetId) + "; loot=" + Runtime.Id(__1.LootPresetId) + "; entries=" + (__1.Equipments?.Count ?? 0)));
+			}
+			else
+			{
+				Runtime.Inc("rank28EquipmentCreated", 1L);
+				string key = Runtime.Id(__result.Id);
+				if (EquipmentRanks.Count > 4096)
+				{
+					EquipmentRanks.Clear();
+				}
+				EquipmentRanks[key] = value2;
+				presentation.GetMethod("ObserveEquipment", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[3] { __instance, text, __result });
+			}
+		}
+		catch (Exception e)
+		{
+			Runtime.Error("rank28.enemy-bind", e);
+		}
+		finally
+		{
+			if (value != null)
+			{
+				SelectedSpawns.Remove(((Il2CppObjectBase)__1).Pointer.ToInt64());
+			}
+		}
+	}
+
+	public static int EnemyRank(BattleSession s, int id)
+	{
+		Equipment equipment = s.FindEquipmentByPlayerId(id);
+		if (equipment == null)
+		{
+			return 0;
+		}
+		return EquipmentRanks.GetValueOrDefault(Runtime.Id(equipment.Id));
+	}
+
+	public static bool EligibleBot(BattleSession s, int id)
+	{
+		if (s.IsAuthoritative && s.IsBotPlayer(id))
+		{
+			return EnemyRank(s, id) > 0;
+		}
+		return false;
+	}
+
+	public static bool TryBotCache(BattleSession s, int id, UniqueId weapon, out Bonuses value)
+	{
+		value = null;
+		if (!EligibleBot(s, id))
+		{
+			return false;
+		}
+		(long, int, string) key = (((Il2CppObjectBase)s).Pointer.ToInt64(), id, Runtime.Id(weapon));
+		if (BotBonusCache.TryGetValue(key, out (long, Bonuses) value2) && Environment.TickCount64 < value2.Item1)
+		{
+			value = value2.Item2;
+			Runtime.Inc("rank28BotAggregateCacheHits", 1L);
+			return true;
+		}
+		return false;
+	}
+
+	public static void StoreBotCache(BattleSession s, int id, UniqueId weapon, Bonuses value)
+	{
+		if (EligibleBot(s, id))
+		{
+			if (BotBonusCache.Count >= 2048)
+			{
+				BotBonusCache.Clear();
+			}
+			BotBonusCache[(((Il2CppObjectBase)s).Pointer.ToInt64(), id, Runtime.Id(weapon))] = (Environment.TickCount64 + 200, value);
+		}
+	}
+
+	public static void FinishAggregate(BattleSession s, int id, Bonuses b)
+	{
+		int num = (EligibleBot(s, id) ? EnemyRank(s, id) : 0);
+		if (num > 0)
+		{
+			b.HasLadder = true;
+			b.Damage = (float)((double)(1f + b.Damage) * RankPolicy.EnemyDamage(num) - 1.0);
+		}
+		b.ClampLadder(num > 0);
+	}
+}
