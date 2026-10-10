@@ -1,0 +1,132 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Frontier.Survivor</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <TargetFramework>net6.0</TargetFramework>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(GameReferenceRoot)/interop/UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="HUDNavigationSystem">
+      <HintPath>$(GameReferenceRoot)/interop/HUDNavigationSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>$(GameReferenceRoot)/interop/Il2Cppmscorlib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Core.Shared.Utils">
+      <HintPath>$(GameReferenceRoot)/interop/Core.Shared.Utils.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Game.Shared">
+      <HintPath>$(GameReferenceRoot)/interop/Game.Shared.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Game">
+      <HintPath>$(GameReferenceRoot)/interop/Game.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Entities">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.Entities.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Physics">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.Physics.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppInterop.Runtime">
+      <HintPath>$(GameReferenceRoot)/core/Il2CppInterop.Runtime.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Transforms">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.Transforms.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Entities.Hybrid">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.Entities.Hybrid.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.NetCode.Authoring.Hybrid">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.NetCode.Authoring.Hybrid.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.AIModule">
+      <HintPath>$(GameReferenceRoot)/interop/UnityEngine.AIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="BepInEx.Core">
+      <HintPath>$(GameReferenceRoot)/core/BepInEx.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="BepInEx.Unity.IL2CPP">
+      <HintPath>$(GameReferenceRoot)/core/BepInEx.Unity.IL2CPP.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(GameReferenceRoot)/core/0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="DataRepository">
+      <HintPath>$(GameReferenceRoot)/interop/DataRepository.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>$(GameReferenceRoot)/interop/UnityEngine.UI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.NetCode">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.NetCode.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Networking.Transport">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.Networking.Transport.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Frontier.Loot">
+      <HintPath>$(GameReferenceRoot)/plugins/FrontierPack/modules/rarity-core/Frontier.Loot.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.InputSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>$(GameReferenceRoot)/interop/Unity.Mathematics.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>$(GameReferenceRoot)/interop/UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>$(GameReferenceRoot)/interop/UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Core">
+      <HintPath>$(GameReferenceRoot)/interop/Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>$(GameReferenceRoot)/interop/UnityEngine.UIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="SteamNetworkSocket">
+      <HintPath>$(GameReferenceRoot)/interop/SteamNetworkSocket.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

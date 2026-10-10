@@ -1,3 +1,4 @@
 # Preserve CRLF bytes of original archived sources for SHA-256 reproducibility.
 history/authored/** -text
 src/Candidates/SurvivorCoop/** -text
+src/Recovered/** -text whitespace=-blank-at-eol,-blank-at-eof
