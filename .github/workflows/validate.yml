@@ -27,6 +27,8 @@ jobs:
             exit 1
           fi
           echo "PASS: clean source-only snapshot"
+      - name: Check native repair kit target filter
+        run: python3 -m unittest discover -s tests/UniversalRepairKit -p "test_*.py" -v
 
   managed-survivor-progression:
     runs-on: ubuntu-latest
@@ -35,9 +37,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: |
+            6.0.x
+            8.0.x
       - name: Compile and execute isolated co-op progression tests
         run: dotnet run --configuration Release --project experiments/SurvivorCoop/ProgressCheck/ProgressCheck.csproj
+      - name: Validate universal repair authority and condition policy
+        run: dotnet run --configuration Release --project tests/UniversalRepairKit/UniversalRepairKitTests.csproj
 
 # Game plugin DLLs require authorized version-matched Cargo Hunters
 # IL2CPP interop reference assemblies. These are intentionally NOT stored
