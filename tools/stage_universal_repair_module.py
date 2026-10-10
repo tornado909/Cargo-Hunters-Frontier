@@ -21,8 +21,11 @@ def encode(data):
     return (json.dumps(data,ensure_ascii=False,separators=(",",":")) + "\n").encode("utf-8")
 
 def create(game,work):
-    compiled = read(work/"prepared"/"60_workshop.json")
-    strings = read(work/"prepared"/"localization.json")
+    # Always derive from the current verified module inputs. Never reuse an
+    # older work/prepared/ JSON: otherwise an already-installed broken
+    # ItemsFilter may silently survive a source-code fix.
+    compiled,strings,_ = kit.make_patch(
+        game/"BepInEx"/"plugins"/"FrontierPack"/"compiled", game)
     ops = [x for x in compiled["operations"] if x["operationId"].startswith("workshop.universal.")]
     if len(ops)!=3:raise ValueError("Expected exactly three prepared operations")
     package = game/"BepInEx"/"plugins"/"FrontierPack"/"modules"/"workshop"
