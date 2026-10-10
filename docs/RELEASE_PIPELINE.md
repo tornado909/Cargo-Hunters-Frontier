@@ -38,7 +38,7 @@
 
 ## Как запустить
 
-- **Actions → Build Frontier plugins and Release BepInEx → Run workflow**: ручная проверка, на 1 день появляется тестовый ZIP как Actions artifact; GitHub Release не создаётся.
+- **Actions → Build Frontier plugins and Release BepInEx → Run workflow**: ручная проверка, тестовый ZIP публикуется как GitHub Pre-release с техническим тегом ci-dryrun-<commit>. После проверки эту временную запись и её тег следует удалить. Actions artifacts не используются, поэтому квота их хранения не расходуется.
 - **Git-тег vX** (например v0.1.0): Actions проводит те же проверки, компилирует три актуальных плагина и автоматически публикует ZIP + BUILD-INFO + SHA256SUMS в соответствующем GitHub Release.
 - Обычный push/PR: только легковесные source checks; защищённые исходные данные не используются.
 

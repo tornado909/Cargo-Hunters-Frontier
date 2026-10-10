@@ -113,17 +113,24 @@ jobs:
 
             Back up your Frontier installation and saves first. Multiplayer peers must use the same pack.
 
-      - name: Short-lived artifact for manual CI dry runs
+      - name: Publish temporary GitHub Pre-release for manual CI runs
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/upload-artifact@v4
+        uses: softprops/action-gh-release@v2
         with:
-          name: Frontier-BepInEx-dry-run
-          path: |
+          tag_name: ci-dryrun-${{ github.sha }}
+          target_commitish: ${{ github.sha }}
+          name: CI dry-run ${{ github.sha }}
+          prerelease: true
+          make_latest: false
+          files: |
             dist/Cargo-Hunters-Frontier-*.zip
             dist/BUILD-INFO.json
             dist/SHA256SUMS.txt
-          if-no-files-found: error
-          retention-days: 1
+          fail_on_unmatched_files: true
+          body: |
+            Temporary verification build, not a stable release.
+            Three plugin DLLs were built from source; remaining 32 are verified production prebuilts.
+            The maintainer should remove this Pre-release and tag after inspection.
 
       - name: Delete transient proprietary references
         if: always()
