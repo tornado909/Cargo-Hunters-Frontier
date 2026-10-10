@@ -29,11 +29,27 @@ def create(game,work):
     original = read(package/"operations.json")
     manifest = read(package/"module.json")
     locale = read(package/"localization.json")
-    if len(original)!=96 or manifest["id"]!="workshop" or manifest["version"]!="0.6.0":
-        raise ValueError("Unexpected source package version: refusing to replace")
+    if manifest["id"]!="workshop" or manifest["version"]!="0.6.0":
+        raise ValueError("Unexpected source package version")
+    if manifest["files"].get("operations.json")!=sha(package/"operations.json") or \
+       manifest["files"].get("localization.json")!=sha(package/"localization.json"):
+        raise ValueError("Existing workshop file hash contract is broken")
+    if len(original)==99:
+        old_custom=[r for r in original if r.get("operation",{}).get("operationId","").startswith("workshop.universal.")]
+        expected={"workshop.universal.00100","workshop.universal.00101","workshop.universal.00102"}
+        if len(old_custom)!=3 or {r["operation"]["operationId"] for r in old_custom}!=expected:
+            raise ValueError("Unexpected preexisting universal repair operations")
+        original=[r for r in original if not r.get("operation",{}).get("operationId","").startswith("workshop.universal.")]
+        for key,expected_key in ((kit.localization_id(kit.NAME_KEY),kit.NAME_KEY),
+                                 (kit.localization_id(kit.DESCRIPTION_KEY),kit.DESCRIPTION_KEY)):
+            if locale.get(key,{}).get("key")!=expected_key:
+                raise ValueError("Existing universal localization mismatch: "+key)
+            del locale[key]
+    elif len(original)!=96:
+        raise ValueError("Unexpected source operation count: "+str(len(original)))
     ids={r["operation"]["operationId"] for r in original}
     if any(x["operationId"] in ids for x in ops):
-        raise ValueError("Already patched source or partial mix: refusing")
+        raise ValueError("Unexpected universal operation collision")
     next_sort=max(r["sort"] for r in original)+1
     dependencies={
         "item_templates": [],
