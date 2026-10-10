@@ -38,7 +38,7 @@ def create(game,work):
     dependencies={
         "item_templates": [],
         "shop_templates":[kit.ID],
-        "craft_recipes":[kit.ID,kit.MATERIAL_A,kit.MATERIAL_B]
+        "craft_recipes":[kit.ID]  # raw materials are vanilla or other-module IDs, not definition dependencies
     }
     for x in ops:
         row={
