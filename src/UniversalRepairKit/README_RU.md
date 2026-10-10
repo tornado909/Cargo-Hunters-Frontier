@@ -59,3 +59,45 @@ RestoreConditionOperation.ExecuteAuthoritative. К моменту его выз�
 
 Существующий ID комплекта, цена 5 000 и рецепт сохранены; прямое
 редактирование сохранений не применяется.
+
+
+## Приёмка Universal Repair Kit 0.1.5 — PASS (10.10.2026)
+
+Исправлена реальная причина незакрывавшейся красной части: только
+`SetMaxValue` недостаточно, когда максимум уже равен эталонному,
+но `Value` предмета остаётся `0.196754`. Реализован согласованный
+ремонт на клиентской предикции `ExecuteLocally` и авторитетной
+`ExecuteAuthoritative`, обе стороны используют только штатную
+операцию и `ConditionComponent.Repair` (до построения ItemDto).
+
+Изолированная Runtime с **копией** актуального offline.save:
+
+- Цель: голова `f310f0c0-f9df-4f8b-a1a8-844f274a3306`.
+- До: `Value=0.196754`, `MaxValue=5`, `PerfectValue=5`.
+- Оригинальный купленный набор `65424712-b194-4c09-a1ce-5bffcee86e18`, заряд `1`.
+- `IItemsOperationProcessor.CanExecute = true`, `Execute = true`.
+- Сервер: `SuccessItemOperationResponse`, `kitSpent=yes`, `savedMax=5`, `savedCurrent=5`, `preDtoVerified=True`.
+- Клиент спустя несколько секунд: `Value=5`, `MaxValue=5`, расходованный набор отсутствует.
+- Вызвано **штатное** `ExitToMainMenuClickedEventArgs`; журнал содержит
+  `OfflineAccountContextPersistenceService: Account context successfully saved`.
+- Тестовый `offline.save` изменился. После повторного входа в убежище
+  нативный компонент снова показал `Value=5`, `MaxValue=5`,
+  расходованный комплект не появился; сохранённый `Condition_d`
+  (0.196754) отсутствует как необязательное поле полной прочности.
+- Основной сейв с SHA256 `9bcc41038ed2414a96753e2396614be8713c6b4f4c4aac5c20d80020db9567f7`
+  **не изменялся** при тестировании и установке.
+- Главная DLL `Frontier.UniversalRepairKit.dll` 0.1.5 с SHA256
+  `f8145c3d47a2ba5d1a0bbe8bf94ea7f41773e0b25600baff044994ae4710f930`
+  установлена; `CargoHunters.exe` запущена, BepInEx отчитался об успешной
+  загрузке версии и об отсутствии ошибок.
+
+Резервная копия основной DLL и сейва:
+`C:\\Users\\ascento\\FrontierKitWork\\backups\\universal-repair-v015-main-20261010T091317Z`.
+
+Пакет для второго ПК, полный набор изменённых исходных каталогов workshop
+и DLL без сохранений:
+https://github.com/tornado909/Cargo-Hunters-Frontier/blob/builds/universal-repair-kit-0.1.5-native-verified/builds/Frontier_UniversalRepairKit_0.1.5_NATIVE_VERIFIED.zip
+
+**Открыто:** мультиплеерный хост/гость не тестировались. Остальные категории
+проверены на совместимость фильтром и по загрузке каталогов, но полная
+нативная приёмка каждого типа экипировки не выполнена.
