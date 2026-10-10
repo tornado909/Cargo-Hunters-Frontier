@@ -39,9 +39,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: |
+            6.0.x
+            8.0.x
       - name: Compile and execute isolated co-op progression tests
         run: dotnet run --configuration Release --project experiments/SurvivorCoop/ProgressCheck/ProgressCheck.csproj
+      - name: Survivor exit lifecycle gate regression
+        run: dotnet run --configuration Release --project tests/SurvivorExitGuard/ExitGateTests.csproj
 
 # Game plugin DLLs require authorized version-matched Cargo Hunters
 # IL2CPP interop reference assemblies. These are intentionally NOT stored
