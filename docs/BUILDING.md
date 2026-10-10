@@ -1,6 +1,6 @@
 # Сборка и релизы Cargo Hunters Frontier
 
-**[Скачать последнюю версию](../releases/latest)** · [GitHub Actions](../actions/workflows/build-release.yml) · [Описание модпака](../README.md)
+**[Скачать последнюю версию](https://github.com/tornado909/Cargo-Hunters-Frontier/releases/latest)** · [GitHub Actions](https://github.com/tornado909/Cargo-Hunters-Frontier/actions/workflows/build-release.yml) · [Описание модпака](../README.md)
 
 ## Для игроков
 
