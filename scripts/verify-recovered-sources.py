@@ -41,7 +41,7 @@ for module in modules:
   if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()!=sha:
    raise SystemExit("SHA mismatch or missing source: "+str(p))
   data=p.read_bytes()
-  if any(x in data for x in (b"-----BEGIN PRIVATE KEY-----",b"/home/ascento",b"C:\\Users\\ascento")):
+  if b"-----BEGIN PRIVATE KEY-----" in data or re.search(rb"(?:[A-Za-z]:[\\/](?:Users|Documents and Settings)[\\/]|/home/[A-Za-z0-9_.-]+)", data, re.I):
    raise SystemExit("Sensitive/private path in source "+rel)
   checks+=1
  if csprojs!=1:raise SystemExit("Need exactly one .csproj for "+name)
