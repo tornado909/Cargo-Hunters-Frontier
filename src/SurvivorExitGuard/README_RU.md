@@ -1,4 +1,4 @@
-# Survivor Exit Guard 0.1.0 — исправление выхода из Survivor
+# Survivor Exit Guard 0.1.2 — исправление выхода из Survivor
 
 **Экспериментальный модуль, не заменяет Frontier.Survivor.dll.**
 
@@ -29,11 +29,11 @@
 
 1. Harmony-prefix для `EnterExitState`, `EnterResultsState`,
    `EnterConnectionLostState`, `LeaveBattleState`, `Leave` и
-   `Shutdown` у `ClientBattleState`, плюс `EnterExitState`,
-   `LeaveBattleState`, `Leave` у `ServerBattleState`. Непосредственно
-   перед началом нативного завершения ставится latch «забег закрывается».
-   Повторные вызовы идемпотентны; при новом `EnterBattleState` latch
-   сбрасывается.
+   `Shutdown` у **`ClientBattleState`**. Непосредственно перед нативным
+   завершением ставится latch «забег закрывается». В новой игровой сессии
+   он сбрасывается при `EnterBattleState` либо новом `RunId`.
+   **Нативные хуки `ServerBattleState` исключены**, потому что ранняя
+   инициализация IL2CPP провоцировала ошибки в `EnterExitState`.
 2. Harmony-prefix для `SurvivorRun.Tick` не позволяет тиковому
    коду читать ECS после начала выхода. В работающей сессии он проверяет,
    что серверный и клиентский мир существуют и у существующих живых
@@ -74,3 +74,27 @@ Ammo или Nanorepair не изменяются.** Исходная DLL Survivo
    и не завершают чужой забег преждевременно.
 
 До прохождения нативного теста статус: **EXPERIMENTAL**.
+
+
+## Испытания 10.10.2026
+
+- 0.1.0: ошибка `AccessViolationException` в раннем
+  `ServerBattleState.EnterExitState` при загрузке WearGuard. **Отклонён.**
+- 0.1.1: нет раннего AccessViolation, но повторяющиеся ошибки
+  `native->managed trampoline` из-за серверного IL2CPP hook.
+  **Отклонён.**
+- **0.1.2:** серверные IL2CPP lifecycle hooks удалены. На ASC-AI
+  сборка NET6 прошла с 0 ошибок и 0 предупреждений; 4 009
+  проверок ExitGate пройдены. В изолированной Runtime настоящий
+  Survivor работал 162 секунды: 57 убийств, 0 ошибок BepInEx,
+  минимум 2 100 блокировок износа, а главный `offline.save`
+  сохранил SHA256.
+- **Эвакуация через настоящий выход не тестировалась**:
+  тестовый процесс завершён контролируемым ограничением времени.
+  Поэтому итоговый статус **EXPERIMENTAL / EVACUATION NOT YET VERIFIED**.
+
+Важно: пользовательский `ErrorLog.log` зафиксировал падение прямо в
+`SurvivorRun.Tick`, но не показывает, какой именно переход состояния
+успел выполниться до чтения `Translation`. Проверка наличия компонента
+и early-exit latch предотвращают известные опасные сценарии, однако
+полная приёмка возвращения в хаб остаётся обязательной.
