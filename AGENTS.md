@@ -6,9 +6,9 @@ These rules apply to all work in this repository, including child source project
 
 **Allowlist:** GitHub-hosted Actions runners and the owner's authorized Windows machine, **ASCENTO-PC**. Work on the Windows machine must use a separate workspace and the existing isolated test game:
 
-- Source checkout / generated build files: a subdirectory of \`%USERPROFILE%\FrontierKitWork\`.
-- Isolated test game: \`D:\Games\Cargo Hunters Modded\Frontier-Source\Reserve-Work\Runtime\`.
-- Production game: \`D:\Games\Cargo Hunters Modded\` — read-only by default.
+- Source checkout / generated build files: a subdirectory of `%USERPROFILE%\FrontierKitWork`.
+- Isolated test game: `D:\Games\Cargo Hunters Modded\Frontier-Source\Reserve-Work\Runtime`.
+- Production game: `D:\Games\Cargo Hunters Modded` — read-only by default.
 
 **Do not access, copy files to, compile on, or run experiments on ASC-AI or any other host for this project.** Finding a build environment on an unapproved host is not authorization to use it. If the permitted targets are unavailable, report the blocker rather than silently switching infrastructure.
 
@@ -16,7 +16,7 @@ These rules apply to all work in this repository, including child source project
 
 - The test runtime uses its own Unity player profile and FreeTP save directory. Do not redirect it to production saves.
 - Before replacing a test DLL or module manifest, confirm that CargoHunters.exe is not running; back up the original bytes and record SHA-256 hashes. Restore the test installation after acceptance checks unless the owner directs otherwise.
-- When recompiling module DLLs, update their \`module.json\` SHA-256 entries in **the test copy only**, or module loading will stop before the catalog is composed.
+- When recompiling module DLLs, update their `module.json` SHA-256 entries in **the test copy only**, or module loading will stop before the catalog is composed.
 - Never edit the live game, production plugin folder, save files, Steam-related data or game executable without separate explicit user authorization.
 - Never commit game-proprietary interop/reference DLLs, local logs, saves, private tokens, Steam credentials or downloaded game installers into this repository.
 
